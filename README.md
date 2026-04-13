@@ -5,25 +5,26 @@
 ![Static Badge](https://img.shields.io/badge/Status-Experimental-orange)
 
 
-A modern, interactive questionnaire for Secureworks Incident Management Retainer (IMR) Advisory Services. Helps prospects identify their security needs and receive tailored recommendations.
+A modern, interactive questionnaire for Secureworks Incident Management Retainer (IMR) Advisory Services. Helps prospects explore the official catalog, capture scoping context, and export a PDF summary for their Secureworks or partner account team.
 
 **Live Demo:** [stefanscanteie.github.io/secureworks-imr](https://stefanscanteie.github.io/secureworks-imr/)
 
 ---
 
-## ✨ Features
+## Features
 
 - **macOS Settings-style Layout** — Two-panel design with sidebar navigation
 - **7 Service Categories** — 40+ catalog services (plus Introduction and Contact sections in the sidebar)
 - **Service search** — Sidebar field filters services by title and description (sections 1–7)
-- **Explain with AI** — Opens Perplexity with a prompt grounded in the official IMR catalog docs
+- **Catalog + curated blurbs** — Each service links to the official Taegis catalog page; one-line summaries live in `service-blurbs.js`
+- **Ask AI (Beta)** — Optional Perplexity search with a prompt grounded in the official catalog (verify in Catalog)
 - **Auto-Save** — Form data saved to browser `localStorage`
 - **PDF Export** — Download a summary of selected services and scoping answers
 - **Sophos Branding** — Official colors, logo, and Montserrat typography
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Clone and open
@@ -35,18 +36,19 @@ Or simply open `index.html` in any modern browser. No build process required.
 
 ---
 
-## 📁 Files
+## Files
 
 | File | Description |
 |------|-------------|
 | `index.html` | Main HTML structure |
 | `styles.css` | Sophos-branded styles |
 | `script.js` | JavaScript functionality |
+| `service-blurbs.js` | Curated one-line descriptions per catalog service (edit to update UI copy) |
 | `sophos-logo.svg` | Sophos logo asset |
 
 ---
 
-## 🎨 Brand Colors
+## Brand Colors
 
 Official Sophos colors from [brand.sophos.com](https://brand.sophos.com/identity#colors):
 
@@ -57,7 +59,7 @@ Official Sophos colors from [brand.sophos.com](https://brand.sophos.com/identity
 
 ---
 
-## 📚 Service categories (sidebar)
+## Service categories (sidebar)
 
 These match the main questionnaire sections (see `index.html`):
 
@@ -73,12 +75,13 @@ There are also **Introduction** and **Contact Information** entries in the nav (
 
 ---
 
-## 📋 Changelog
+## Changelog
 
 ### v2.6 (Current)
 
 - Sidebar service search (filters catalog services; subsection headers hide when empty for the current query)
 - Safari/WebKit-focused styling for the search field (no inner “search box” chrome when typing)
+- Per-service **Catalog** link to Taegis docs, curated summaries in `service-blurbs.js`, and **Ask AI (Beta)** (Perplexity) alongside Interested
 
 ### v2.5
 
@@ -100,14 +103,14 @@ There are also **Introduction** and **Contact Information** entries in the nav (
 
 ---
 
-## 🔗 Resources
+## Resources
 
 - [IMR Services Catalog](https://docs.taegis.secureworks.com/services/incident-response/imr-services-catalog/imr-services-catalog-overview/)
 - [Sophos Brand Guidelines](https://brand.sophos.com)
 
 ---
 
-## ⚖️ License
+## License
 
 **Sophos** and the **Sophos logo** are registered trademarks of Sophos Ltd.
 

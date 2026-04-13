@@ -5,7 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeSidebarNavigation();
-    initializeExplainButtons();
+    initializeServiceHelpActions();
     initializeInterestedCheckboxes();
     initializeProgressStats();
     initializeAutoSave();
@@ -66,7 +66,11 @@ function showSection(sectionId, pushState = true) {
     }
 }
 
-// ==================== EXPLAIN WITH PERPLEXITY ====================
+// ==================== CATALOG LINK + BLURBS + ASK AI (BETA) ====================
+
+function getCatalogDocUrl(docSlug) {
+    return `https://docs.taegis.secureworks.com/services/incident-response/imr-services-catalog/${docSlug}/`;
+}
 
 // Service name to documentation slug mapping
 const serviceDocSlugs = {
@@ -114,29 +118,53 @@ const serviceDocSlugs = {
     'Technical Assistance Services': 'technical-assistance-services'
 };
 
-function initializeExplainButtons() {
+function initializeServiceHelpActions() {
+    const blurbs =
+        typeof window.IMR_SERVICE_BLURBS === 'object' && window.IMR_SERVICE_BLURBS !== null
+            ? window.IMR_SERVICE_BLURBS
+            : {};
+
     document.querySelectorAll('.service-block').forEach(block => {
         const header = block.querySelector('.service-header');
         const titleEl = block.querySelector('.service-title');
         const checkbox = block.querySelector('.interested-checkbox');
-        
+        const desc = block.querySelector('.service-description');
+
         if (!header || !titleEl || !checkbox) return;
-        
+
         const serviceName = titleEl.textContent.trim();
         const docSlug = serviceDocSlugs[serviceName] || 'imr-services-catalog-overview';
-        
-        // Create wrapper div for actions
+
+        if (desc && Object.prototype.hasOwnProperty.call(blurbs, serviceName)) {
+            desc.textContent = blurbs[serviceName];
+        }
+
+        const catalogUrl = getCatalogDocUrl(docSlug);
+
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'service-actions';
-        
-        // Create explain button
+
+        const catalogLink = document.createElement('a');
+        catalogLink.className = 'catalog-doc-link';
+        catalogLink.href = catalogUrl;
+        catalogLink.target = '_blank';
+        catalogLink.rel = 'noopener noreferrer';
+        catalogLink.setAttribute(
+            'aria-label',
+            `Official IMR catalog: ${serviceName}`
+        );
+        catalogLink.title = 'Open the official Taegis catalog page for this service.';
+        catalogLink.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg><span>Catalog</span>`;
+
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'explain-btn';
-        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg> Explain with AI`;
+        btn.title =
+            'Opens Perplexity in a new tab with a prompt grounded in the official catalog. Unofficial summary; verify details in Catalog.';
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg><span>Ask AI (Beta)</span>`;
         btn.onclick = () => explainWithAI(serviceName, docSlug);
-        
-        // Move checkbox into actions div
+
+        actionsDiv.appendChild(catalogLink);
         actionsDiv.appendChild(btn);
         actionsDiv.appendChild(checkbox);
         header.appendChild(actionsDiv);
@@ -145,7 +173,7 @@ function initializeExplainButtons() {
 
 function explainWithAI(serviceName, docSlug) {
     const baseUrl = 'https://www.perplexity.ai/search?q=';
-    const docUrl1 = `https://docs.taegis.secureworks.com/services/incident-response/imr-services-catalog/${docSlug}/`;
+    const docUrl1 = getCatalogDocUrl(docSlug);
     const docUrl2 = 'https://docs.taegis.secureworks.com/services/incident-response/imr-services-catalog/imr-services-catalog-overview/';
     
     const prompt = `Using ONLY the official Secureworks documentation at ${docUrl1} and ${docUrl2} - Explain the "${serviceName}" service from the Secureworks Incident Management Retainer (IMR) catalog: 1. What is this service? 2. What is included? 3. Who should consider this? 4. Service Units required 5. Prerequisites or requirements. Keep it professional but easy to understand.`;
@@ -209,6 +237,22 @@ function initializeServiceSearch() {
     });
 }
 
+function getServiceSearchHaystack(block) {
+    const parts = [];
+    const title = block.querySelector('.service-title')?.textContent?.trim();
+    const desc = block.querySelector('.service-description')?.textContent?.trim();
+    if (title) parts.push(title);
+    if (desc) parts.push(desc);
+    block.querySelectorAll('.scoping-title, .question').forEach(el => {
+        parts.push(el.textContent || '');
+    });
+    block.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(el => {
+        const ph = el.getAttribute('placeholder');
+        if (ph) parts.push(ph);
+    });
+    return parts.join(' ').toLowerCase();
+}
+
 function applyServiceSearch(rawQuery) {
     const q = rawQuery.toLowerCase();
     const catalogBlocks = document.querySelectorAll(
@@ -220,9 +264,7 @@ function applyServiceSearch(rawQuery) {
             block.classList.remove('search-hidden');
             return;
         }
-        const title = block.querySelector('.service-title')?.textContent?.trim() || '';
-        const desc = block.querySelector('.service-description')?.textContent?.trim() || '';
-        const haystack = (title + ' ' + desc).toLowerCase();
+        const haystack = getServiceSearchHaystack(block);
         block.classList.toggle('search-hidden', !haystack.includes(q));
     });
 
@@ -242,6 +284,25 @@ function applyServiceSearch(rawQuery) {
         }
         sub.classList.toggle('search-hidden', !hasVisible);
     });
+
+    // If the user is on a catalog section with zero matches, jump to the first section that has hits
+    // (sidebar search is global; staying on e.g. Incident Readiness for "pen" looked like a broken filter).
+    if (q) {
+        const active = document.querySelector('.content-section.active');
+        const activeId = active?.id || '';
+        if (activeId.startsWith('section-')) {
+            const visibleHere = active.querySelectorAll('.service-block:not(.search-hidden)').length;
+            if (visibleHere === 0) {
+                for (let i = 1; i <= 7; i++) {
+                    const sec = document.getElementById(`section-${i}`);
+                    if (sec?.querySelector('.service-block:not(.search-hidden)')) {
+                        showSection(`section-${i}`);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 function updateNavIndicators() {
@@ -542,6 +603,16 @@ function downloadPDF() {
             color: #999;
             font-style: italic;
         }
+        .pdf-disclaimer {
+            margin-top: 25px;
+            padding: 12px 14px;
+            background: #f8f7fc;
+            border: 1px solid #e0dce8;
+            border-radius: 6px;
+            font-size: 10px;
+            line-height: 1.55;
+            color: #555;
+        }
         .pdf-footer {
             margin-top: 30px;
             padding-top: 15px;
@@ -585,6 +656,10 @@ function downloadPDF() {
     <div class="pdf-services-header">SELECTED SERVICES (${interestedServices.length})</div>
     
     ${servicesHTML}
+
+    <div class="pdf-disclaimer">
+        This export is a convenience summary for discussion only. It is not a commitment to purchase or schedule services. Service Units, scope, initiation (including ticketing, email, or partner paths), and delivery terms are governed by the official IMR services catalog and your agreement with Secureworks or your partner. Treat the contents as sensitive if they describe your environment or incidents.
+    </div>
 
     <div class="pdf-footer">
         Generated on ${date} | © ${new Date().getFullYear()} Sophos Ltd. All rights reserved.
