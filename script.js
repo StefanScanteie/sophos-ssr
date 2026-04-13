@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeInterestedCheckboxes();
     initializeProgressStats();
     initializeAutoSave();
+    initializeServiceSearch();
     loadSavedData();
 });
 
@@ -103,7 +104,6 @@ const serviceDocSlugs = {
     'Functional Exercise': 'functional-exercise',
     'Incident Response Fundamentals Training': 'incident-response-fundamentals-training',
     'Incident Response Tabletop Exercise': 'tabletop-exercise',
-    'Incident Response Drills': 'tabletop-exercise',
     'Taegis Health Check': 'taegis_health_check',
     'Taegis Enablement: Core': 'taegis_enablement_core',
     'Taegis Enablement: Plus': 'taegis_enablement_plus',
@@ -111,7 +111,7 @@ const serviceDocSlugs = {
     'Data Collection & Integration': 'data_collection_and_integration',
     'Customization Services': 'taegis_customizations',
     'Ransomware Preparedness Program': 'imr-services-catalog-overview',
-    'Technical Assistance Services': 'imr-services-catalog-overview'
+    'Technical Assistance Services': 'technical-assistance-services'
 };
 
 function initializeExplainButtons() {
@@ -196,6 +196,52 @@ function updateProgressStats() {
             selectedEl.classList.add('pulse');
         }
     }
+}
+
+// ==================== SIDEBAR SERVICE SEARCH ====================
+
+function initializeServiceSearch() {
+    const input = document.getElementById('sidebar-service-search');
+    if (!input) return;
+
+    input.addEventListener('input', function() {
+        applyServiceSearch(this.value.trim());
+    });
+}
+
+function applyServiceSearch(rawQuery) {
+    const q = rawQuery.toLowerCase();
+    const catalogBlocks = document.querySelectorAll(
+        '#questionnaire-form .content-section[id^="section-"] .service-block'
+    );
+
+    catalogBlocks.forEach(block => {
+        if (!q) {
+            block.classList.remove('search-hidden');
+            return;
+        }
+        const title = block.querySelector('.service-title')?.textContent?.trim() || '';
+        const desc = block.querySelector('.service-description')?.textContent?.trim() || '';
+        const haystack = (title + ' ' + desc).toLowerCase();
+        block.classList.toggle('search-hidden', !haystack.includes(q));
+    });
+
+    document.querySelectorAll('#questionnaire-form .content-section[id^="section-"] .subsection').forEach(sub => {
+        if (!q) {
+            sub.classList.remove('search-hidden');
+            return;
+        }
+        let el = sub.nextElementSibling;
+        let hasVisible = false;
+        while (el && !el.classList.contains('subsection')) {
+            if (el.classList.contains('service-block') && !el.classList.contains('search-hidden')) {
+                hasVisible = true;
+                break;
+            }
+            el = el.nextElementSibling;
+        }
+        sub.classList.toggle('search-hidden', !hasVisible);
+    });
 }
 
 function updateNavIndicators() {

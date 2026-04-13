@@ -113,17 +113,29 @@
             </nav>
             
             <div class="sidebar-footer">
-                <div class="sidebar-stats">
-                    <div class="stat-item">
-                        <span class="stat-label">Selected</span>
-                        <span class="stat-value" id="selected-count">0</span>
-                    </div>
+                <div class="sidebar-footer-search-row">
+                    <label class="sidebar-search" for="sidebar-service-search">
+                        <span class="sidebar-search-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </span>
+                        <input type="search" id="sidebar-service-search" placeholder="Search services…" autocomplete="off" enterkeyhint="search">
+                    </label>
                 </div>
-                <div class="autosave-indicator" id="autosave-indicator">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Auto-save on
+                <div class="sidebar-footer-actions-row">
+                    <div class="sidebar-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Selected</span>
+                            <span class="stat-value" id="selected-count">0</span>
+                        </div>
+                    </div>
+                    <div class="autosave-indicator" id="autosave-indicator">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Auto-save on
+                    </div>
                 </div>
             </div>
         </aside>
@@ -1099,28 +1111,6 @@
                         </div>
                     </div>
 
-                    <!-- Incident Response Drills -->
-                    <div class="service-block">
-                        <div class="service-header">
-                            <h3 class="service-title">Incident Response Drills</h3>
-                            <label class="interested-checkbox">
-                                <input type="checkbox" name="s4_ir_drills_interested">
-                                <span>Interested</span>
-                            </label>
-                        </div>
-                        <p class="service-description">A coordinated, supervised activity employed to validate a specific function or capability. Drills are commonly used to provide training on equipment, validate procedures and maintain current skills.</p>
-                        <div class="scoping-questions">
-                            <div class="scoping-title">Scoping Questions</div>
-                            <div class="form-group">
-                                <label class="question">What incident scenarios are most relevant?</label>
-                                <input type="text" name="s4_ir_drills_q1" placeholder="e.g., Malware outbreak, system compromise">
-                            </div>
-                            <div class="form-group">
-                                <label class="question">Who will participate?</label>
-                                <input type="text" name="s4_ir_drills_q2" placeholder="e.g., SOC analysts, IT operations">
-                            </div>
-                        </div>
-                    </div>
                     </div>
                 </div>
 
@@ -1334,16 +1324,24 @@
                                 <span>Interested</span>
                             </label>
                         </div>
-                        <p class="service-description">Request fixed-scope technical assistance with structured outcomes for your security needs.</p>
+                        <p class="service-description">Fixed-scope technical requests with structured outcomes, delivered remotely by Secureworks specialists. Includes Malware Analysis, Threat Infrastructure Takedown, and Active Directory Password Analysis.</p>
                         <div class="scoping-questions">
                             <div class="scoping-title">Scoping Questions</div>
                             <div class="form-group">
-                                <label class="question">What technical challenges or projects require assistance?</label>
-                                <textarea name="s7_tas_q1" placeholder="Describe your technical challenges..."></textarea>
+                                <label class="question">Which services are you interested in?</label>
+                                <div class="radio-group" style="flex-direction: column;">
+                                    <label class="radio-item"><input type="checkbox" name="s7_tas_malware"><span>Malware Analysis — reverse engineering of suspicious samples to extract IOCs</span></label>
+                                    <label class="radio-item"><input type="checkbox" name="s7_tas_takedown"><span>Threat Infrastructure Takedown — removal of phishing sites or malicious domains</span></label>
+                                    <label class="radio-item"><input type="checkbox" name="s7_tas_password"><span>Active Directory Password Analysis — statistical reporting on password strength</span></label>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label class="question">What are your desired outcomes?</label>
-                                <textarea name="s7_tas_q2" placeholder="Describe desired outcomes..."></textarea>
+                                <label class="question">How many samples, domains, or AD domains are in scope?</label>
+                                <input type="text" name="s7_tas_q1" placeholder="e.g., 1 malware sample, 3 phishing domains, 2 AD domains">
+                            </div>
+                            <div class="form-group">
+                                <label class="question">Any additional context or urgency?</label>
+                                <textarea name="s7_tas_q2" placeholder="Describe the situation or timeline..."></textarea>
                             </div>
                         </div>
                     </div>

@@ -153,8 +153,103 @@ body {
     border-top: 1px solid var(--sophos-border);
     background: #fafbfc;
     display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+}
+
+.sidebar-footer-actions-row {
+    display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.sidebar-footer-search-row {
+    width: 100%;
+}
+
+/* Pill search field — matches autosave / Saved control styling */
+.sidebar-search {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+    padding: 0.35rem 0.75rem;
+    background: var(--sophos-bg);
+    border-radius: 20px;
+    cursor: text;
+}
+
+.sidebar-search-icon {
+    display: flex;
+    flex-shrink: 0;
+    color: var(--sophos-blue);
+}
+
+.sidebar-search-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.sidebar-search input {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--sophos-blue);
+    outline: none;
+    box-shadow: none;
+    /* Drop WebKit’s inner “search field” chrome (sharp inner box when focused) */
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.sidebar-search input:focus,
+.sidebar-search input:active {
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+}
+
+.sidebar-search input::placeholder {
+    color: var(--sophos-blue);
+    opacity: 0.45;
+}
+
+.sidebar-search input::-webkit-search-decoration,
+.sidebar-search input::-webkit-search-results-button,
+.sidebar-search input::-webkit-search-results-decoration {
+    display: none;
+}
+
+/* Keep a simple native clear control without the bulky search-field frame */
+.sidebar-search input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 14px;
+    width: 14px;
+    margin-left: 4px;
+    cursor: pointer;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='9' fill='%235c6578'/%3E%3Cpath stroke='%23fff' stroke-linecap='round' stroke-width='1.6' d='M6.5 6.5l7 7m0-7l-7 7'/%3E%3C/svg%3E") center / 14px 14px no-repeat;
+}
+
+.sidebar-search:focus-within {
+    box-shadow: 0 0 0 2px rgba(32, 6, 247, 0.2);
+}
+
+.service-block.search-hidden {
+    display: none;
+}
+
+.subsection.search-hidden {
+    display: none;
 }
 
 .sidebar-stats {
@@ -184,7 +279,8 @@ body {
     align-items: center;
     gap: 0.4rem;
     font-size: 0.75rem;
-    color: var(--sophos-gray-light);
+    font-weight: 500;
+    color: var(--sophos-blue);
     padding: 0.35rem 0.7rem;
     background: var(--sophos-bg);
     border-radius: 20px;

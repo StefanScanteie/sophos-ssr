@@ -1,5 +1,10 @@
 # Secureworks IMR Advisory Services Questionnaire
 
+![Static Badge](https://img.shields.io/badge/Version-2.6-green)
+![Static Badge](https://img.shields.io/badge/Demo_Available%3A-Yes-%232006F7)
+![Static Badge](https://img.shields.io/badge/Status-Experimental-orange)
+
+
 A modern, interactive questionnaire for Secureworks Incident Management Retainer (IMR) Advisory Services. Helps prospects identify their security needs and receive tailored recommendations.
 
 **Live Demo:** [stefanscanteie.github.io/secureworks-imr](https://stefanscanteie.github.io/secureworks-imr/)
@@ -9,11 +14,12 @@ A modern, interactive questionnaire for Secureworks Incident Management Retainer
 ## ✨ Features
 
 - **macOS Settings-style Layout** — Two-panel design with sidebar navigation
-- **7 Service Categories** — 40+ individual services to choose from
-- **Explain with AI** — Perplexity AI integration for service explanations
-- **Auto-Save** — Form data saved to browser localStorage
-- **PDF Export** — Download summary of selected services
-- **Sophos Branding** — Official colors and typography
+- **7 Service Categories** — 40+ catalog services (plus Introduction and Contact sections in the sidebar)
+- **Service search** — Sidebar field filters services by title and description (sections 1–7)
+- **Explain with AI** — Opens Perplexity with a prompt grounded in the official IMR catalog docs
+- **Auto-Save** — Form data saved to browser `localStorage`
+- **PDF Export** — Download a summary of selected services and scoping answers
+- **Sophos Branding** — Official colors, logo, and Montserrat typography
 
 ---
 
@@ -51,21 +57,31 @@ Official Sophos colors from [brand.sophos.com](https://brand.sophos.com/identity
 
 ---
 
-## 📚 Service Categories
+## 📚 Service categories (sidebar)
 
-1. **Incident Readiness Services**
-2. **Testing and Validation Services**
-3. **Threat Intelligence Services**
-4. **Workshops and Exercises**
+These match the main questionnaire sections (see `index.html`):
+
+1. **Incident Readiness**
+2. **Testing & Validation**
+3. **Threat Intelligence**
+4. **Workshops & Exercises**
 5. **Professional Services**
 6. **Programs**
-7. **Technical Assistance Services**
+7. **Technical Assistance**
+
+There are also **Introduction** and **Contact Information** entries in the nav (not counted in the seven categories above).
 
 ---
 
 ## 📋 Changelog
 
-### v2.5 (Current)
+### v2.6 (Current)
+
+- Sidebar service search (filters catalog services; subsection headers hide when empty for the current query)
+- Safari/WebKit-focused styling for the search field (no inner “search box” chrome when typing)
+
+### v2.5
+
 - Redesigned to macOS Settings-style two-panel layout
 - Sidebar navigation with category icons
 - Blue dot indicators for categories with selections
