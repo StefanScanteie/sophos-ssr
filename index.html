@@ -38,6 +38,15 @@
                     <span class="nav-label">Introduction</span>
                 </a>
                 
+                <a href="#scoping" class="nav-item" data-section="scoping">
+                    <span class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                        </svg>
+                    </span>
+                    <span class="nav-label">Scoping Questions</span>
+                </a>
+
                 <a href="#section-1" class="nav-item" data-section="section-1">
                     <span class="nav-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -161,9 +170,9 @@
                         <div class="intro-card">
                             <h2>How to Use This Questionnaire</h2>
                             <ol class="intro-list">
-                                <li>Browse the service categories in the sidebar</li>
-                                <li>Mark services you're interested in using the checkbox</li>
-                                <li>Answer the scoping questions to describe your environment and priorities</li>
+                                <li>Start with <strong>Scoping Questions</strong> to get personalized service recommendations</li>
+                                <li>Review the recommended services and adjust any selections as needed</li>
+                                <li>Answer the per-service scoping questions to describe your environment and priorities</li>
                                 <li>Fill in your contact information</li>
                                 <li>Download the PDF summary for your Secureworks account team, partner, or internal stakeholders</li>
                             </ol>
@@ -173,6 +182,178 @@
                             <span>For more information, see the full catalog:</span><br>
                             <a href="https://docs.taegis.secureworks.com/services/incident-response/imr-services-catalog/imr-services-catalog-overview/" target="_blank" rel="noopener noreferrer">Incident Management Retainer Services Catalog Overview</a>
                             <p class="catalog-link-note">Service Units, initiation steps (ticketing, email, or partner), languages, and billing context are explained there.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===================== Scoping Questions ===================== -->
+                <div class="content-section" id="scoping">
+                    <div class="content-header">
+                        <h1>Scoping Questions</h1>
+                        <p>Answer a few questions to get personalized service recommendations</p>
+                    </div>
+
+                    <div class="content-body">
+                        <div class="intro-card">
+                            <h2>Guided Recommendations</h2>
+                            <p>Answer the questions below and relevant services across the catalog will be automatically selected for you. All selections are fully editable — add or remove any service after reviewing the suggestions.</p>
+                        </div>
+
+                        <!-- IR Program Maturity -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">Incident Response Program</div>
+                                <div class="form-group">
+                                    <label class="question">Does your organization have a documented Incident Response plan?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_ir_plan" value="none"><span>No — we do not have one</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ir_plan" value="partial"><span>Partial — work in progress</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ir_plan" value="outdated"><span>Yes — but not reviewed in over 12 months</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ir_plan" value="current"><span>Yes — reviewed within the last 12 months</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="question">Do you have documented playbooks for specific incident scenarios (e.g., ransomware, phishing, data breach)?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_playbooks" value="none"><span>No playbooks</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_playbooks" value="partial"><span>Some playbooks, but gaps exist</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_playbooks" value="yes"><span>Yes, comprehensive playbooks in place</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testing History -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">Testing &amp; Validation History</div>
+                                <div class="form-group">
+                                    <label class="question">When did your organization last conduct a penetration test or security assessment?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_last_pentest" value="never"><span>Never</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_last_pentest" value="over2y"><span>More than 2 years ago</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_last_pentest" value="within2y"><span>Within the last 1–2 years</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_last_pentest" value="within1y"><span>Within the last 12 months</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technology Environment -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">Technology Environment</div>
+                                <div class="form-group">
+                                    <label class="question">Which of the following describe your environment? (select all that apply)</label>
+                                    <div class="radio-group scoping-radio-group" style="flex-direction: column; gap: 0.6rem;">
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_onprem"><span>On-premises infrastructure (servers, data center)</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_cloud"><span>Cloud workloads (AWS, Azure, GCP)</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_web"><span>Web applications or APIs</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_mobile"><span>Mobile applications (iOS or Android)</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_iot"><span>Specialized / IoT / OT devices</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_sap"><span>SAP systems</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="question">What identity infrastructure is in use?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_identity" value="ad"><span>On-premises Active Directory only</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_identity" value="entraid"><span>Microsoft Entra ID (Azure AD) only</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_identity" value="both"><span>Both Active Directory and Entra ID</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_identity" value="other"><span>Other / Not applicable</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Incident History -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">Incident History &amp; Risk Concerns</div>
+                                <div class="form-group">
+                                    <label class="question">Has your organization experienced a significant security incident in the last 3 years?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="ransomware"><span>Yes — ransomware or extortion</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="other"><span>Yes — other significant incident (breach, fraud, insider)</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="concerned"><span>No incident, but ransomware is a top concern</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="none"><span>No known incidents, no specific ransomware concern</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Team Readiness & Awareness -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">Team Readiness &amp; Awareness</div>
+                                <div class="form-group">
+                                    <label class="question">How would you describe your team's incident response readiness?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_team" value="none"><span>No formal training or exercises conducted</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_team" value="some"><span>Some training; no recent exercises</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_team" value="advanced"><span>Regular exercises; want to stress-test with adversary TTPs</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_team" value="mature"><span>Mature program; want full multi-phase adversary simulation</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="question">Does your organization conduct security awareness testing (e.g., phishing simulations)?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_awareness" value="none"><span>No — we have not run phishing or social engineering tests</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_awareness" value="basic"><span>Basic click-tracking only; want to add credential capture or vishing</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_awareness" value="comprehensive"><span>Comprehensive program already in place</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Threat Intelligence -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">Threat Intelligence Needs</div>
+                                <div class="form-group">
+                                    <label class="question">What type of threat intelligence support does your organization need?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_intel" value="none"><span>None at this time</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_intel" value="sector"><span>Sector and geography trend briefings for leadership</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_intel" value="brand"><span>Brand and digital footprint monitoring (phishing, impersonation)</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_intel" value="ongoing"><span>Ongoing analyst access and custom intelligence requirements</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Taegis Platform -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">Taegis Platform</div>
+                                <div class="form-group">
+                                    <label class="question">What is your current relationship with the Taegis platform?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_taegis" value="none"><span>Not a Taegis customer</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_taegis" value="new"><span>New or deploying Taegis — need onboarding and training</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_taegis" value="existing_optimize"><span>Existing customer — want to optimize detections and workflows</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_taegis" value="existing_integrate"><span>Existing customer — need custom integrations or log source onboarding</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recommendation Banner -->
+                        <div id="scoping-recommendation-banner" class="scoping-recommendation-banner" style="display: none;">
+                            <div class="scoping-recommendation-inner">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="scoping-rec-icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span class="scoping-recommendation-text">
+                                    <strong id="scoping-recommendation-count"></strong>
+                                </span>
+                                <button type="button" class="btn scoping-rec-btn" onclick="showSection('section-1')">
+                                    Review Services
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

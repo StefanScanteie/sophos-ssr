@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeProgressStats();
     initializeAutoSave();
     initializeServiceSearch();
+    initializeScopingRecommendations();
     loadSavedData();
 });
 
@@ -285,20 +286,22 @@ function applyServiceSearch(rawQuery) {
         sub.classList.toggle('search-hidden', !hasVisible);
     });
 
-    // If the user is on a catalog section with zero matches, jump to the first section that has hits
-    // (sidebar search is global; staying on e.g. Incident Readiness for "pen" looked like a broken filter).
+    // Navigate to the first section with hits when: not on a catalog section at all,
+    // or on a catalog section that now has zero matches.
     if (q) {
         const active = document.querySelector('.content-section.active');
         const activeId = active?.id || '';
-        if (activeId.startsWith('section-')) {
-            const visibleHere = active.querySelectorAll('.service-block:not(.search-hidden)').length;
-            if (visibleHere === 0) {
-                for (let i = 1; i <= 7; i++) {
-                    const sec = document.getElementById(`section-${i}`);
-                    if (sec?.querySelector('.service-block:not(.search-hidden)')) {
-                        showSection(`section-${i}`);
-                        break;
-                    }
+        const isOnCatalogSection = activeId.startsWith('section-');
+        const visibleHere = isOnCatalogSection
+            ? active.querySelectorAll('.service-block:not(.search-hidden)').length
+            : 0;
+
+        if (!isOnCatalogSection || visibleHere === 0) {
+            for (let i = 1; i <= 7; i++) {
+                const sec = document.getElementById(`section-${i}`);
+                if (sec?.querySelector('.service-block:not(.search-hidden)')) {
+                    showSection(`section-${i}`);
+                    break;
                 }
             }
         }
@@ -327,6 +330,162 @@ function updateNavIndicators() {
             }
         }
     });
+}
+
+// ==================== SCOPING RECOMMENDATIONS ====================
+
+let scopingRecommended = new Set();
+
+function initializeScopingRecommendations() {
+    const scopingSection = document.getElementById('scoping');
+    if (!scopingSection) return;
+    scopingSection.addEventListener('change', applyRecommendations);
+}
+
+function buildRecommendations() {
+    const form = document.getElementById('questionnaire-form');
+    const rec = new Set();
+
+    const radio = name => form.querySelector(`[name="${name}"]:checked`)?.value;
+    const checked = name => !!form.querySelector(`[name="${name}"]`)?.checked;
+
+    // IR Plan
+    const irPlan = radio('scope_ir_plan');
+    if (irPlan === 'none' || irPlan === 'partial') rec.add('s1_irp_dev_interested');
+    if (irPlan === 'outdated') rec.add('s1_irp_review_interested');
+
+    // Playbooks
+    const playbooks = radio('scope_playbooks');
+    if (playbooks === 'none' || playbooks === 'partial') rec.add('s1_playbook_interested');
+
+    // Last pentest
+    const pentest = radio('scope_last_pentest');
+    if (pentest === 'never') {
+        rec.add('s2_ext_pentest_interested');
+        rec.add('s2_int_pentest_interested');
+        rec.add('s2_vuln_interested');
+    } else if (pentest === 'over2y') {
+        rec.add('s2_ext_pentest_interested');
+        rec.add('s2_vuln_interested');
+    }
+
+    // Environment checkboxes
+    if (checked('scope_env_onprem')) {
+        rec.add('s2_int_pentest_interested');
+        rec.add('s2_ad_interested');
+    }
+    if (checked('scope_env_cloud')) rec.add('s2_cloud_pentest_interested');
+    if (checked('scope_env_web')) {
+        rec.add('s2_webapp_interested');
+        rec.add('s2_api_interested');
+    }
+    if (checked('scope_env_mobile')) rec.add('s2_mobile_app_interested');
+    if (checked('scope_env_iot'))    rec.add('s2_device_pentest_interested');
+    if (checked('scope_env_sap'))    rec.add('s2_sap_interested');
+
+    // Identity infrastructure
+    const identity = radio('scope_identity');
+    if (identity === 'ad'   || identity === 'both') rec.add('s2_ad_interested');
+    if (identity === 'entraid' || identity === 'both') rec.add('s2_entra_interested');
+
+    // Incident history
+    const incidents = radio('scope_incidents');
+    if (incidents === 'ransomware') {
+        rec.add('s6_ransomware_interested');
+        rec.add('s2_threat_hunt_interested');
+        rec.add('s4_tabletop_interested');
+    } else if (incidents === 'other') {
+        rec.add('s2_threat_hunt_interested');
+        rec.add('s4_tabletop_interested');
+    } else if (incidents === 'concerned') {
+        rec.add('s6_ransomware_interested');
+    }
+
+    // Team readiness
+    const team = radio('scope_team');
+    if (team === 'none') {
+        rec.add('s4_ir_training_interested');
+        rec.add('s4_tabletop_interested');
+    } else if (team === 'some') {
+        rec.add('s4_tabletop_interested');
+    } else if (team === 'advanced') {
+        rec.add('s4_adv_emul_interested');
+        rec.add('s4_collab_adv_interested');
+    } else if (team === 'mature') {
+        rec.add('s4_adv_sim_interested');
+    }
+
+    // Security awareness
+    const awareness = radio('scope_awareness');
+    if (awareness === 'none')  rec.add('s2_phish_click_interested');
+    else if (awareness === 'basic') rec.add('s2_phish_cred_interested');
+    else if (awareness === 'advanced') rec.add('s2_vishing_interested');
+
+    // Threat intelligence
+    const intel = radio('scope_intel');
+    if (intel === 'sector')  rec.add('s3_landscape_interested');
+    else if (intel === 'brand')   rec.add('s3_ebs_interested');
+    else if (intel === 'ongoing') rec.add('s3_ti_support_interested');
+
+    // Taegis platform
+    const taegis = radio('scope_taegis');
+    if (taegis === 'new') {
+        rec.add('s5_core_interested');
+        rec.add('s5_training_interested');
+    } else if (taegis === 'existing_optimize') {
+        rec.add('s5_health_interested');
+        rec.add('s5_plus_interested');
+    } else if (taegis === 'existing_integrate') {
+        rec.add('s5_data_interested');
+        rec.add('s5_custom_interested');
+    }
+
+    return rec;
+}
+
+function applyRecommendations() {
+    const newRec = buildRecommendations();
+    const form = document.getElementById('questionnaire-form');
+
+    // Un-check services that were previously recommended but no longer are
+    scopingRecommended.forEach(name => {
+        if (!newRec.has(name)) {
+            const cb = form.querySelector(`[name="${name}"]`);
+            if (cb) {
+                cb.checked = false;
+                cb.closest('.service-block')?.classList.remove('interested');
+            }
+        }
+    });
+
+    // Check newly recommended services
+    newRec.forEach(name => {
+        const cb = form.querySelector(`[name="${name}"]`);
+        if (cb) {
+            cb.checked = true;
+            cb.closest('.service-block')?.classList.add('interested');
+        }
+    });
+
+    scopingRecommended = newRec;
+
+    updateProgressStats();
+    updateNavIndicators();
+    triggerAutoSave();
+    updateRecommendationBanner(newRec.size);
+}
+
+function updateRecommendationBanner(count) {
+    const banner  = document.getElementById('scoping-recommendation-banner');
+    const countEl = document.getElementById('scoping-recommendation-count');
+    if (!banner || !countEl) return;
+
+    if (count === 0) {
+        banner.style.display = 'none';
+    } else {
+        banner.style.display = 'block';
+        countEl.textContent = `${count} service${count === 1 ? '' : 's'} recommended based on your answers. Review and adjust using the sidebar.`;
+    }
 }
 
 // ==================== AUTO-SAVE ====================
@@ -402,7 +561,7 @@ function loadSavedData() {
             if (element.type === 'checkbox') {
                 element.checked = data[key] === true;
                 if (element.checked) {
-                    const serviceBlock = element.closest('.service-block');
+                    const serviceBlock = element.closest('.service-block:not(.scoping-question-block)');
                     if (serviceBlock) serviceBlock.classList.add('interested');
                 }
             } else if (element.type === 'radio') {
@@ -414,7 +573,11 @@ function loadSavedData() {
         
         updateProgressStats();
         updateNavIndicators();
-        
+
+        // Sync recommendation set from restored answers (no checkbox toggling)
+        scopingRecommended = buildRecommendations();
+        updateRecommendationBanner(scopingRecommended.size);
+
         const indicator = document.getElementById('autosave-indicator');
         if (indicator) {
             indicator.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Restored';
@@ -692,6 +855,8 @@ function clearForm() {
         localStorage.removeItem('questionnaire_saved_at');
         updateProgressStats();
         updateNavIndicators();
+        scopingRecommended = new Set();
+        updateRecommendationBanner(0);
         showSection('intro', false);
         const indicator = document.getElementById('autosave-indicator');
         if (indicator) indicator.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Cleared';
