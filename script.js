@@ -69,20 +69,65 @@ function showSection(sectionId, pushState = true) {
 
 // ==================== CATALOG LINK + BLURBS + ASK AI (BETA) ====================
 
-function getCatalogDocUrl(docSlug) {
-    return `https://docs.taegis.secureworks.com/services/incident-response/imr-services-catalog/${docSlug}/`;
+const CATALOG_ADVISORY_BASE =
+    'https://docs.sophos.com/servicescatalog/en-us/pages/advisory-services/';
+const CATALOG_ADVISORY_OVERVIEW =
+    'https://docs.sophos.com/servicescatalog/en-us/pages/advisory-services.html';
+const CATALOG_PROFESSIONAL_OVERVIEW =
+    'https://docs.sophos.com/servicescatalog/en-us/pages/professional-services.html';
+
+function getCatalogDocUrl(serviceName, docSlug) {
+    const external = serviceExternalUrls[serviceName];
+    if (external) return external;
+
+    const proPath = serviceProDocPaths[serviceName];
+    if (proPath) {
+        return `https://docs.sophos.com/servicescatalog/en-us/${proPath}`;
+    }
+
+    const slug = docSlug || serviceDocSlugs[serviceName];
+    if (slug) {
+        return `${CATALOG_ADVISORY_BASE}${slug}.html`;
+    }
+
+    return serviceCatalogOverview[serviceName] || CATALOG_ADVISORY_OVERVIEW;
 }
 
-// Service name to documentation slug mapping
+const serviceCatalogOverview = {
+    'Taegis Guided Onboarding (Enablement: Core)': CATALOG_PROFESSIONAL_OVERVIEW,
+    'Taegis Guided Onboarding - Enterprise (Enablement: Plus)': CATALOG_PROFESSIONAL_OVERVIEW,
+    'Taegis Administrator Training': CATALOG_PROFESSIONAL_OVERVIEW,
+    'Taegis Analyst Training': CATALOG_PROFESSIONAL_OVERVIEW,
+    'Taegis Advanced Search Training': CATALOG_PROFESSIONAL_OVERVIEW,
+    'Taegis Custom Parser Training': CATALOG_PROFESSIONAL_OVERVIEW,
+    'Taegis Scenario Based Training (1 Scenario)': CATALOG_PROFESSIONAL_OVERVIEW,
+    'Custom-scoped Engagement': CATALOG_ADVISORY_OVERVIEW,
+};
+
+const serviceExternalUrls = {
+    'Emergency Incident Response':
+        'https://www.sophos.com/products/incident-response-services/emergency-response',
+};
+
+const serviceProDocPaths = {
+    'Taegis Solution Review – per tenant': 'pages/Pro-services/PRPDIA-taegis-solution-review.html',
+    'Taegis Native Response Playbook configuration': 'pages/Pro-services/PRAOAA-add-on-svcs.html',
+    'Sophos Central Security posture assessment': 'pages/Pro-services/PCAZ3C-security-posture-assessment.html',
+    'Sophos MDR guided onboarding': 'pages/Pro-services/PRPE0A-guided-onboarding.html',
+    'Sophos Hybrid XDR guided onboarding': 'pages/Pro-services/hybrid-xdr-guided-onboarding.html',
+};
+
+// Service name to advisory documentation slug mapping
 const serviceDocSlugs = {
     'Incident Response Plan Development': 'incident-response-plan-development',
     'Incident Response Plan Review': 'incident-response-plan-review',
     'Incident Response Playbook Development': 'incident_response_playbook_development',
+    'AI LLM Security Assessment': 'ai-llm-security-assessment',
     'Custom Application Security Assessment': 'custom-application-security-assessment',
     'Mobile Application Security Assessment': 'mobile-application-security-assessment',
     'Secure Code Analysis': 'secure-code-analysis',
     'Web Application Security Assessment': 'web-application-security-assessment',
-    'Web Service/API Test': 'web-service-test',
+    'Web API Test': 'web-service-test',
     'Cloud Penetration Test': 'cloud-penetration-test',
     'External Penetration Test': 'external-penetration-test',
     'Internal Penetration Test': 'internal-penetration-test',
@@ -92,31 +137,23 @@ const serviceDocSlugs = {
     'Laptop Penetration Test': 'laptop-penetration-test',
     'Medical Device Test': 'medical-device-test',
     'SAP Penetration Test': 'sap-penetration-test',
-    'Phishing Drill – Click and Log': 'phishing_drill',
-    'Phishing Drill – Credential Capture': 'phishing_drill',
+    'Phishing Drills': 'phishing_drill',
     'Vishing Drill': 'vishing_drill',
     'Active Directory Security Assessment': 'active_directory_security_assessment',
-    'Entra ID Security Assessment': 'microsoft_entra_id_security_assessment',
+    'Microsoft Entra ID Security Assessment': 'microsoft_entra_id_security_assessment',
     'Password Cracking and Analysis Assessment': 'password-analysis',
     'Threat Hunting Assessment': 'threat-hunting-assessment',
-    'Vulnerability Assessment': 'vulnerability_assessment',
-    'EBS Info Brief': 'ebs_info_brief',
+    'Enterprise Brand Surveillance (EBS) Information Brief': 'ebs_info_brief',
     'Threat Landscape Brief': 'threat-brief',
     'Threat Intelligence Support Services': 'threat_intelligence_support_services',
-    'Collaborative Adversary Exercise': 'collaborative_adversary_exercise',
-    'Adversary Emulation Exercise': 'adversary_emulation_exercise',
-    'Adversary Simulation Exercise': 'adversary_simulation_exercise',
+    'Purple Team Exercise': 'collaborative_adversary_exercise',
+    'Red Team Exercise - Intel Led': 'adversary_emulation_exercise',
+    'Red Team Exercise - Full Spectrum': 'adversary_simulation_exercise',
     'Functional Exercise': 'functional-exercise',
-    'Incident Response Fundamentals Training': 'incident-response-fundamentals-training',
+    'Principles of Incident Response Training': 'principles-of-incident-response-training',
+    'Incident Commander Training': 'incident-commander-training',
+    'Attacking and Defending Active Directory': 'attacking_and_defending_active_directory',
     'Incident Response Tabletop Exercise': 'tabletop-exercise',
-    'Taegis Health Check': 'taegis_health_check',
-    'Taegis Enablement: Core': 'taegis_enablement_core',
-    'Taegis Enablement: Plus': 'taegis_enablement_plus',
-    'Taegis Training': 'taegis_training',
-    'Data Collection & Integration': 'data_collection_and_integration',
-    'Customization Services': 'taegis_customizations',
-    'Ransomware Preparedness Program': 'imr-services-catalog-overview',
-    'Technical Assistance Services': 'technical-assistance-services'
 };
 
 function initializeServiceHelpActions() {
@@ -124,23 +161,33 @@ function initializeServiceHelpActions() {
         typeof window.IMR_SERVICE_BLURBS === 'object' && window.IMR_SERVICE_BLURBS !== null
             ? window.IMR_SERVICE_BLURBS
             : {};
+    const serviceUnits =
+        typeof window.IMR_SERVICE_SU === 'object' && window.IMR_SERVICE_SU !== null
+            ? window.IMR_SERVICE_SU
+            : {};
 
     document.querySelectorAll('.service-block').forEach(block => {
         const header = block.querySelector('.service-header');
         const titleEl = block.querySelector('.service-title');
         const checkbox = block.querySelector('.interested-checkbox');
         const desc = block.querySelector('.service-description');
+        const suEl = block.querySelector('.service-su');
 
         if (!header || !titleEl || !checkbox) return;
 
         const serviceName = titleEl.textContent.trim();
-        const docSlug = serviceDocSlugs[serviceName] || 'imr-services-catalog-overview';
+        const docSlug = serviceDocSlugs[serviceName];
 
         if (desc && Object.prototype.hasOwnProperty.call(blurbs, serviceName)) {
             desc.textContent = blurbs[serviceName];
         }
 
-        const catalogUrl = getCatalogDocUrl(docSlug);
+        if (suEl && Object.prototype.hasOwnProperty.call(serviceUnits, serviceName)) {
+            suEl.textContent = `Service Units: ${serviceUnits[serviceName]}`;
+        }
+
+        const catalogUrl = getCatalogDocUrl(serviceName, docSlug);
+        const isProfessional = Boolean(serviceProDocPaths[serviceName] || serviceCatalogOverview[serviceName]);
 
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'service-actions';
@@ -152,9 +199,11 @@ function initializeServiceHelpActions() {
         catalogLink.rel = 'noopener noreferrer';
         catalogLink.setAttribute(
             'aria-label',
-            `Official IMR catalog: ${serviceName}`
+            `Official Sophos catalog: ${serviceName}`
         );
-        catalogLink.title = 'Open the official Taegis catalog page for this service.';
+        catalogLink.title = isProfessional
+            ? 'Open the official Sophos Professional Services catalog page for this service.'
+            : 'Open the official Sophos Advisory Services catalog page for this service.';
         catalogLink.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg><span>Catalog</span>`;
 
         const btn = document.createElement('button');
@@ -163,7 +212,7 @@ function initializeServiceHelpActions() {
         btn.title =
             'Opens Perplexity in a new tab with a prompt grounded in the official catalog. Unofficial summary; verify details in Catalog.';
         btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg><span>Ask AI (Beta)</span>`;
-        btn.onclick = () => explainWithAI(serviceName, docSlug);
+        btn.onclick = () => explainWithAI(serviceName, docSlug, isProfessional);
 
         actionsDiv.appendChild(catalogLink);
         actionsDiv.appendChild(btn);
@@ -172,13 +221,13 @@ function initializeServiceHelpActions() {
     });
 }
 
-function explainWithAI(serviceName, docSlug) {
+function explainWithAI(serviceName, docSlug, isProfessional) {
     const baseUrl = 'https://www.perplexity.ai/search?q=';
-    const docUrl1 = getCatalogDocUrl(docSlug);
-    const docUrl2 = 'https://docs.taegis.secureworks.com/services/incident-response/imr-services-catalog/imr-services-catalog-overview/';
-    
-    const prompt = `Using ONLY the official Secureworks documentation at ${docUrl1} and ${docUrl2} - Explain the "${serviceName}" service from the Secureworks Incident Management Retainer (IMR) catalog: 1. What is this service? 2. What is included? 3. Who should consider this? 4. Service Units required 5. Prerequisites or requirements. Keep it professional but easy to understand.`;
-    
+    const docUrl1 = getCatalogDocUrl(serviceName, docSlug);
+    const docUrl2 = isProfessional ? CATALOG_PROFESSIONAL_OVERVIEW : CATALOG_ADVISORY_OVERVIEW;
+
+    const prompt = `Using ONLY the official Sophos documentation at ${docUrl1} and ${docUrl2} - Explain the "${serviceName}" service from the Sophos Security Services catalog: 1. What is this service? 2. What is included? 3. Who should consider this? 4. Service Units required 5. Prerequisites or requirements. Keep it professional but easy to understand.`;
+
     const encodedPrompt = encodeURIComponent(prompt);
     window.open(baseUrl + encodedPrompt, '_blank');
 }
@@ -242,8 +291,10 @@ function getServiceSearchHaystack(block) {
     const parts = [];
     const title = block.querySelector('.service-title')?.textContent?.trim();
     const desc = block.querySelector('.service-description')?.textContent?.trim();
+    const su = block.querySelector('.service-su')?.textContent?.trim();
     if (title) parts.push(title);
     if (desc) parts.push(desc);
+    if (su) parts.push(su);
     block.querySelectorAll('.scoping-title, .question').forEach(el => {
         parts.push(el.textContent || '');
     });
@@ -363,10 +414,10 @@ function buildRecommendations() {
     if (pentest === 'never') {
         rec.add('s2_ext_pentest_interested');
         rec.add('s2_int_pentest_interested');
-        rec.add('s2_vuln_interested');
+        rec.add('s2_webapp_interested');
     } else if (pentest === 'over2y') {
         rec.add('s2_ext_pentest_interested');
-        rec.add('s2_vuln_interested');
+        rec.add('s2_webapp_interested');
     }
 
     // Environment checkboxes
@@ -391,20 +442,22 @@ function buildRecommendations() {
     // Incident history
     const incidents = radio('scope_incidents');
     if (incidents === 'ransomware') {
-        rec.add('s6_ransomware_interested');
+        rec.add('s6_emergency_ir_interested');
         rec.add('s2_threat_hunt_interested');
         rec.add('s4_tabletop_interested');
     } else if (incidents === 'other') {
         rec.add('s2_threat_hunt_interested');
         rec.add('s4_tabletop_interested');
     } else if (incidents === 'concerned') {
-        rec.add('s6_ransomware_interested');
+        rec.add('s6_emergency_ir_interested');
+        rec.add('s4_tabletop_interested');
     }
 
     // Team readiness
     const team = radio('scope_team');
     if (team === 'none') {
         rec.add('s4_ir_training_interested');
+        rec.add('s4_incident_commander_interested');
         rec.add('s4_tabletop_interested');
     } else if (team === 'some') {
         rec.add('s4_tabletop_interested');
@@ -417,9 +470,11 @@ function buildRecommendations() {
 
     // Security awareness
     const awareness = radio('scope_awareness');
-    if (awareness === 'none')  rec.add('s2_phish_click_interested');
-    else if (awareness === 'basic') rec.add('s2_phish_cred_interested');
+    if (awareness === 'none' || awareness === 'basic') rec.add('s2_phish_drill_interested');
     else if (awareness === 'advanced') rec.add('s2_vishing_interested');
+
+    // Identity infrastructure — AD training for AD users
+    if (identity === 'ad' || identity === 'both') rec.add('s4_ad_training_interested');
 
     // Threat intelligence
     const intel = radio('scope_intel');
@@ -430,14 +485,14 @@ function buildRecommendations() {
     // Taegis platform
     const taegis = radio('scope_taegis');
     if (taegis === 'new') {
-        rec.add('s5_core_interested');
-        rec.add('s5_training_interested');
+        rec.add('s5_taegis_core_interested');
+        rec.add('s5_taegis_analyst_training_interested');
     } else if (taegis === 'existing_optimize') {
-        rec.add('s5_health_interested');
-        rec.add('s5_plus_interested');
+        rec.add('s5_taegis_review_interested');
+        rec.add('s5_taegis_plus_interested');
     } else if (taegis === 'existing_integrate') {
-        rec.add('s5_data_interested');
-        rec.add('s5_custom_interested');
+        rec.add('s5_taegis_playbook_interested');
+        rec.add('s5_taegis_parser_training_interested');
     }
 
     return rec;
@@ -617,6 +672,7 @@ function downloadPDF() {
         const section = service.closest('.content-section');
         const sectionTitle = section?.querySelector('.content-header h1')?.textContent?.trim() || '';
         const serviceTitle = service.querySelector('.service-title')?.textContent?.trim() || 'Service';
+        const serviceSu = service.querySelector('.service-su')?.textContent?.trim() || '';
 
         if (sectionTitle && sectionTitle !== currentSection) {
             currentSection = sectionTitle;
@@ -657,6 +713,7 @@ function downloadPDF() {
         servicesHTML += `
             <div class="pdf-service">
                 <div class="pdf-service-title">✓ ${escapeHtml(serviceTitle)}</div>
+                ${serviceSu ? `<div class="pdf-service-su">${escapeHtml(serviceSu)}</div>` : ''}
                 ${answersHTML}
             </div>`;
     });
@@ -668,7 +725,7 @@ function downloadPDF() {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sophos IMR Advisory Services Questionnaire</title>
+    <title>Sophos Advisory Services Questionnaire</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
@@ -745,6 +802,12 @@ function downloadPDF() {
             font-size: 13px;
             margin-bottom: 8px;
         }
+        .pdf-service-su {
+            font-size: 11px;
+            color: #2006F7;
+            font-weight: 600;
+            margin: -4px 0 8px 0;
+        }
         .pdf-answer {
             margin-left: 15px;
             margin-bottom: 8px;
@@ -803,7 +866,7 @@ function downloadPDF() {
                 <path fill="#001a47" d="M319.66,4.53h-43.49s-5.2,0-5.2,0h-7.7s0,53.89,0,53.89h12.9s0-14.44,0-14.44h43.49c10.88,0,19.73-8.85,19.73-19.73,0-10.88-8.85-19.73-19.73-19.73ZM319.66,31.08h-43.49s0-13.66,0-13.66h43.49c3.77,0,6.83,3.06,6.83,6.83,0,3.77-3.06,6.83-6.83,6.83Z"/>
             </svg>
         </div>
-        <div class="pdf-subtitle">IMR Advisory Services Questionnaire</div>
+        <div class="pdf-subtitle">Sophos Advisory Services Questionnaire</div>
     </div>
 
     <div class="pdf-contact">
@@ -821,7 +884,7 @@ function downloadPDF() {
     ${servicesHTML}
 
     <div class="pdf-disclaimer">
-        This export is a convenience summary for discussion only. It is not a commitment to purchase or schedule services. Service Units, scope, initiation (including ticketing, email, or partner paths), and delivery terms are governed by the official IMR services catalog and your agreement with Secureworks or your partner. Treat the contents as sensitive if they describe your environment or incidents.
+        This export is a convenience summary for discussion only. It is not a commitment to purchase or schedule services. Service Units, scope, initiation, and delivery terms are governed by the official Sophos services catalog and your agreement with Sophos or your partner. Treat the contents as sensitive if they describe your environment or incidents.
     </div>
 
     <div class="pdf-footer">

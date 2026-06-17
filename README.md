@@ -1,11 +1,10 @@
-# Secureworks IMR Advisory Services Questionnaire
+# Sophos Advisory Services Questionnaire
 
-![Static Badge](https://img.shields.io/badge/Version-2.6-green)
+![Static Badge](https://img.shields.io/badge/Version-3.0-green)
 ![Static Badge](https://img.shields.io/badge/Demo_Available%3A-Yes-%232006F7)
 ![Static Badge](https://img.shields.io/badge/Status-Experimental-orange)
 
-
-A modern, interactive questionnaire for Secureworks Incident Management Retainer (IMR) Advisory Services. Helps prospects explore the official catalog, capture scoping context, and export a PDF summary for their Secureworks or partner account team.
+A modern, interactive questionnaire for **Sophos Advisory Services** and **Sophos Professional Services**. Helps prospects explore the official catalog, see Service Unit (SU) sizing, capture scoping context, and export a PDF summary for their Sophos account team or partner.
 
 **Live Demo:** [stefanscanteie.github.io/secureworks-imr](https://stefanscanteie.github.io/secureworks-imr/)
 
@@ -14,12 +13,13 @@ A modern, interactive questionnaire for Secureworks Incident Management Retainer
 ## Features
 
 - **macOS Settings-style Layout** — Two-panel design with sidebar navigation
-- **7 Service Categories** — 40+ catalog services (plus Introduction and Contact sections in the sidebar)
-- **Service search** — Sidebar field filters services by title and description (sections 1–7)
-- **Catalog + curated blurbs** — Each service links to the official Taegis catalog page; one-line summaries live in `service-blurbs.js`
+- **7 Service Categories** — 49 catalog services (plus Introduction and Contact sections in the sidebar)
+- **Service Unit display** — Each service shows catalog SU sizing in a dedicated line, populated from `service-blurbs.js`
+- **Service search** — Sidebar field filters services by title, description, SU text, and scoping questions (sections 1–7)
+- **Catalog + curated blurbs** — Each service links to the official Sophos catalog page; summaries and SU maps live in `service-blurbs.js`
 - **Ask AI (Beta)** — Optional Perplexity search with a prompt grounded in the official catalog (verify in Catalog)
 - **Auto-Save** — Form data saved to browser `localStorage`
-- **PDF Export** — Download a summary of selected services and scoping answers
+- **PDF Export** — Download a summary of selected services, SU sizing, and scoping answers
 - **Sophos Branding** — Official colors, logo, and Montserrat typography
 
 ---
@@ -32,7 +32,27 @@ git clone https://github.com/StefanScanteie/secureworks-imr.git
 open index.html
 ```
 
-Or simply open `index.html` in any modern browser. No build process required.
+Or serve locally and open in a browser:
+
+```bash
+python3 -m http.server 8765
+# http://127.0.0.1:8765/
+```
+
+No build process required.
+
+### Smoke test
+
+```bash
+python3 smoke_test.py
+```
+
+Runs static alignment checks (titles, blurbs, SU map, catalog URLs) and a headless browser pass (SU injection, selections, scoping recommendations, search, catalog links). Requires `playwright` for the browser step:
+
+```bash
+pip install playwright
+python -m playwright install chromium
+```
 
 ---
 
@@ -40,10 +60,11 @@ Or simply open `index.html` in any modern browser. No build process required.
 
 | File | Description |
 |------|-------------|
-| `index.html` | Main HTML structure |
+| `index.html` | Main HTML structure and service blocks |
 | `styles.css` | Sophos-branded styles |
-| `script.js` | JavaScript functionality |
-| `service-blurbs.js` | Curated one-line descriptions per catalog service (edit to update UI copy) |
+| `script.js` | Navigation, catalog links, SU injection, scoping recommendations, PDF export |
+| `service-blurbs.js` | Curated descriptions (`IMR_SERVICE_BLURBS`) and SU sizing (`IMR_SERVICE_SU`) per service |
+| `smoke_test.py` | Local static + Playwright smoke checks |
 | `sophos-logo.svg` | Sophos logo asset |
 
 ---
@@ -63,25 +84,46 @@ Official Sophos colors from [brand.sophos.com](https://brand.sophos.com/identity
 
 These match the main questionnaire sections (see `index.html`):
 
-1. **Incident Readiness**
-2. **Testing & Validation**
-3. **Threat Intelligence**
-4. **Workshops & Exercises**
-5. **Professional Services**
-6. **Programs**
-7. **Technical Assistance**
+1. **Incident Readiness** — IR plans and playbooks
+2. **Testing & Validation** — Pen tests, assessments, phishing/vishing drills
+3. **Threat Intelligence** — EBS brief, landscape brief, TI support
+4. **Workshops & Exercises** — Purple/red team, training, tabletops
+5. **Professional Services** — Taegis onboarding, training, Sophos MDR/XDR onboarding (from the [Professional Services catalog](https://docs.sophos.com/servicescatalog/en-us/pages/professional-services.html))
+6. **Incident Response** — Emergency IR and custom-scoped engagements
+7. **AI Security** — AI LLM Security Assessment
 
 There are also **Introduction** and **Contact Information** entries in the nav (not counted in the seven categories above).
 
 ---
 
+## Catalog sources of truth
+
+| Content | URL |
+|---------|-----|
+| Advisory services | [Sophos Advisory Services](https://docs.sophos.com/servicescatalog/en-us/pages/advisory-services.html) |
+| Professional services | [Sophos Professional Services](https://docs.sophos.com/servicescatalog/en-us/pages/professional-services.html) |
+
+To update service names, descriptions, or SU values, edit `service-blurbs.js` (keys must match `.service-title` text in `index.html` exactly) and adjust `serviceDocSlugs` / pro-service paths in `script.js` when catalog URLs change.
+
+---
+
 ## Changelog
 
-### v2.6 (Current)
+### v3.0 (Current)
+
+- Synced service list, descriptions, and SU sizing to the official Sophos services catalog
+- Added per-service **Service Units** line (`.service-su`) populated from `IMR_SERVICE_SU`
+- Replaced Taegis/Secureworks catalog links with Sophos Advisory and Professional Services docs
+- Merged phishing drills into a single **Phishing Drills** service
+- Updated Professional Services section to catalog-aligned Taegis and Sophos onboarding/training offerings
+- Replaced Programs / Technical Assistance sections with **Incident Response** and **AI Security**
+- Renamed exercises and training to match current catalog (Purple Team, Red Team, Principles of IR Training, etc.)
+
+### v2.6
 
 - Sidebar service search (filters catalog services; subsection headers hide when empty for the current query)
 - Safari/WebKit-focused styling for the search field (no inner “search box” chrome when typing)
-- Per-service **Catalog** link to Taegis docs, curated summaries in `service-blurbs.js`, and **Ask AI (Beta)** (Perplexity) alongside Interested
+- Per-service **Catalog** link, curated summaries in `service-blurbs.js`, and **Ask AI (Beta)** (Perplexity) alongside Interested
 
 ### v2.5
 
@@ -93,11 +135,13 @@ There are also **Introduction** and **Contact Information** entries in the nav (
 - Various content updates
 
 ### v2.0
+
 - Added "Explain with AI" (Perplexity integration)
 - Progress tracking and auto-save
 - Animations and transitions
 
 ### v1.0
+
 - Initial release with all 7 sections
 - PDF export and Sophos branding
 
@@ -105,7 +149,8 @@ There are also **Introduction** and **Contact Information** entries in the nav (
 
 ## Resources
 
-- [IMR Services Catalog](https://docs.taegis.secureworks.com/services/incident-response/imr-services-catalog/imr-services-catalog-overview/)
+- [Sophos Advisory Services Catalog](https://docs.sophos.com/servicescatalog/en-us/pages/advisory-services.html)
+- [Sophos Professional Services Catalog](https://docs.sophos.com/servicescatalog/en-us/pages/professional-services.html)
 - [Sophos Brand Guidelines](https://brand.sophos.com)
 
 ---
