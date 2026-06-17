@@ -162,6 +162,57 @@ def run_browser_checks() -> list[str]:
             timeout=5000,
         )
 
+        # AI LLM scoping -> AI service
+        page.locator('input[name="scope_ai_llm"][value="production"]').check()
+        page.wait_for_function(
+            "() => document.querySelector('input[name=\"s7_ai_llm_interested\"]')?.checked === true",
+            timeout=5000,
+        )
+
+        # Active incident -> Emergency IR; concerned history alone should not require it
+        page.locator('input[name="scope_active_incident"][value="yes"]').check()
+        page.wait_for_function(
+            "() => document.querySelector('input[name=\"s6_emergency_ir_interested\"]')?.checked === true",
+            timeout=5000,
+        )
+        page.locator('input[name="scope_active_incident"][value="no"]').check()
+        page.locator('input[name="scope_incidents"][value="concerned"]').check()
+        page.wait_for_function(
+            "() => document.querySelector('input[name=\"s6_emergency_ir_interested\"]')?.checked === false",
+            timeout=5000,
+        )
+
+        # Phishing-only awareness -> vishing drill
+        page.locator('input[name="scope_awareness"][value="phishing_only"]').check()
+        page.wait_for_function(
+            "() => document.querySelector('input[name=\"s2_vishing_interested\"]')?.checked === true",
+            timeout=5000,
+        )
+
+        # Pass 2: stale pentest alone -> external only (no env selected)
+        page.evaluate("""() => {
+            document.querySelectorAll('input[type="checkbox"][name^="scope_env_"]').forEach(cb => {
+                cb.checked = false;
+                cb.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+        }""")
+        page.locator('input[name="scope_last_pentest"][value="never"]').check()
+        page.wait_for_function(
+            """() => {
+                const ext = document.querySelector('input[name="s2_ext_pentest_interested"]')?.checked;
+                const internal = document.querySelector('input[name="s2_int_pentest_interested"]')?.checked;
+                return ext === true && internal !== true;
+            }""",
+            timeout=5000,
+        )
+
+        # Stale pentest + on-prem -> adds internal pentest
+        page.locator('input[name="scope_env_onprem"]').check()
+        page.wait_for_function(
+            "() => document.querySelector('input[name=\"s2_int_pentest_interested\"]')?.checked === true",
+            timeout=5000,
+        )
+
         # Search filters to phishing drills
         page.fill("#sidebar-service-search", "phishing drills")
         page.wait_for_function(

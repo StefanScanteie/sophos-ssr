@@ -196,7 +196,7 @@
                     <div class="content-body">
                         <div class="intro-card">
                             <h2>Guided Recommendations</h2>
-                            <p>Answer the questions below and relevant services across the catalog will be automatically selected for you. All selections are fully editable — add or remove any service after reviewing the suggestions.</p>
+                            <p>These questions follow common readiness themes: documented response, tested controls, identity security, detection validation, and exercised teams. Recommendations map to the Sophos advisory and professional services catalog — adjust any selection before export.</p>
                         </div>
 
                         <!-- IR Program Maturity -->
@@ -207,8 +207,8 @@
                                     <label class="question">Does your organization have a documented Incident Response plan?</label>
                                     <div class="radio-group scoping-radio-group">
                                         <label class="radio-item"><input type="radio" name="scope_ir_plan" value="none"><span>No — we do not have one</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_ir_plan" value="partial"><span>Partial — work in progress</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_ir_plan" value="outdated"><span>Yes — but not reviewed in over 12 months</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ir_plan" value="partial"><span>Partial — draft or work in progress</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ir_plan" value="outdated"><span>Yes — not reviewed in over 12 months</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_ir_plan" value="current"><span>Yes — reviewed within the last 12 months</span></label>
                                     </div>
                                 </div>
@@ -218,6 +218,22 @@
                                         <label class="radio-item"><input type="radio" name="scope_playbooks" value="none"><span>No playbooks</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_playbooks" value="partial"><span>Some playbooks, but gaps exist</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_playbooks" value="yes"><span>Yes, comprehensive playbooks in place</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="question">When did you last exercise your incident response plan (tabletop or live exercise)?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_last_exercise" value="never"><span>Never</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_last_exercise" value="over12m"><span>More than 12 months ago</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_last_exercise" value="within12m"><span>Within the last 12 months</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="question">Do you have a designated incident commander or crisis lead?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_incident_commander" value="none"><span>No designated role</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_incident_commander" value="untrained"><span>Yes — but not formally trained</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_incident_commander" value="trained"><span>Yes — trained and identified</span></label>
                                     </div>
                                 </div>
                             </div>
@@ -236,6 +252,16 @@
                                         <label class="radio-item"><input type="radio" name="scope_last_pentest" value="within1y"><span>Within the last 12 months</span></label>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="question">Which application security gap best describes your organization?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_app_testing" value="none"><span>No significant gap / not applicable</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_app_testing" value="custom_app"><span>Custom or thick-client applications with limited pre-production testing</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_app_testing" value="source_code"><span>In-house development with source code available for review</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_app_testing" value="web_api"><span>Public or partner-facing web applications or APIs</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_app_testing" value="mobile"><span>Mobile applications (iOS or Android)</span></label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -252,8 +278,18 @@
                                         <label class="radio-item"><input type="checkbox" name="scope_env_mobile"><span>Mobile applications (iOS or Android)</span></label>
                                         <label class="radio-item"><input type="checkbox" name="scope_env_iot"><span>Specialized / IoT / OT devices</span></label>
                                         <label class="radio-item"><input type="checkbox" name="scope_env_sap"><span>SAP systems</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_laptop"><span>Corporate laptops with sensitive data (remote / travel workforce)</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_wireless"><span>Corporate Wi-Fi at physical sites</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_physical"><span>Physical offices with controlled access (multiple sites)</span></label>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Identity & Access Security -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">Identity &amp; Access Security</div>
                                 <div class="form-group">
                                     <label class="question">What identity infrastructure is in use?</label>
                                     <div class="radio-group scoping-radio-group">
@@ -261,6 +297,45 @@
                                         <label class="radio-item"><input type="radio" name="scope_identity" value="entraid"><span>Microsoft Entra ID (Azure AD) only</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_identity" value="both"><span>Both Active Directory and Entra ID</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_identity" value="other"><span>Other / Not applicable</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="question">When did you last assess identity infrastructure or AD password hygiene?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_identity_assessed" value="never"><span>Never / unknown</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_identity_assessed" value="over12m"><span>More than 12 months ago</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_identity_assessed" value="within12m"><span>Within the last 12 months</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="question">Has your IT or security staff received Active Directory attack-path training?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_ad_training" value="no"><span>No</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ad_training" value="over2y"><span>Yes — more than 2 years ago</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ad_training" value="recent"><span>Yes — within the last 2 years</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detection & Threat Hunting -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">Detection &amp; Threat Hunting</div>
+                                <div class="form-group">
+                                    <label class="question">Do you proactively hunt for threats beyond routine alert triage?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_hunting" value="none"><span>No formal threat hunting</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_hunting" value="adhoc"><span>Ad hoc hunts only</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_hunting" value="regular"><span>Regular, structured hunting program</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="question">When did you last validate detections against priority attack techniques (e.g., identity abuse, ransomware)?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_detection_test" value="not_tested"><span>Not tested / unknown</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_detection_test" value="over12m"><span>More than 12 months ago</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_detection_test" value="within12m"><span>Within the last 12 months</span></label>
                                     </div>
                                 </div>
                             </div>
@@ -271,6 +346,13 @@
                             <div class="scoping-questions">
                                 <div class="scoping-title">Incident History &amp; Risk Concerns</div>
                                 <div class="form-group">
+                                    <label class="question">Do you require immediate support for an active security incident?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_active_incident" value="yes"><span>Yes — active incident requiring immediate assistance</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_active_incident" value="no"><span>No — planning and readiness only</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="question">Has your organization experienced a significant security incident in the last 3 years?</label>
                                     <div class="radio-group scoping-radio-group">
                                         <label class="radio-item"><input type="radio" name="scope_incidents" value="ransomware"><span>Yes — ransomware or extortion</span></label>
@@ -279,28 +361,53 @@
                                         <label class="radio-item"><input type="radio" name="scope_incidents" value="none"><span>No known incidents, no specific ransomware concern</span></label>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="question">Is executive or board reporting on cyber risk a priority?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_exec_reporting" value="no"><span>No / not a current priority</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_exec_reporting" value="sector"><span>Yes — sector and threat trend briefings</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_exec_reporting" value="brand"><span>Yes — brand exposure and impersonation risk</span></label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Team Readiness & Awareness -->
+                        <!-- Team Readiness & Exercises -->
                         <div class="service-block scoping-question-block">
                             <div class="scoping-questions">
-                                <div class="scoping-title">Team Readiness &amp; Awareness</div>
+                                <div class="scoping-title">Team Readiness &amp; Exercises</div>
                                 <div class="form-group">
                                     <label class="question">How would you describe your team's incident response readiness?</label>
                                     <div class="radio-group scoping-radio-group">
                                         <label class="radio-item"><input type="radio" name="scope_team" value="none"><span>No formal training or exercises conducted</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_team" value="some"><span>Some training; no recent exercises</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_team" value="some"><span>Some training; limited recent exercises</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_team" value="advanced"><span>Regular exercises; want to stress-test with adversary TTPs</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_team" value="mature"><span>Mature program; want full multi-phase adversary simulation</span></label>
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="question">What is the most advanced exercise your team has completed?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_exercise_type" value="none"><span>None — discussion-based only or never exercised</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_exercise_type" value="tabletop"><span>Tabletop / walkthrough only</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_exercise_type" value="functional"><span>Functional exercise (timed, multi-role, no live attacks)</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_exercise_type" value="technical"><span>Live technical / purple or red team exercise</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Human Risk & Security Awareness -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">Human Risk &amp; Security Awareness</div>
+                                <div class="form-group">
                                     <label class="question">Does your organization conduct security awareness testing (e.g., phishing simulations)?</label>
                                     <div class="radio-group scoping-radio-group">
                                         <label class="radio-item"><input type="radio" name="scope_awareness" value="none"><span>No — we have not run phishing or social engineering tests</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_awareness" value="basic"><span>Basic click-tracking only; want to add credential capture or vishing</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_awareness" value="comprehensive"><span>Comprehensive program already in place</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_awareness" value="basic"><span>Basic simulations only (click tracking or credential capture)</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_awareness" value="phishing_only"><span>Regular phishing program — no voice (vishing) testing</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_awareness" value="comprehensive"><span>Comprehensive multi-channel program in place</span></label>
                                     </div>
                                 </div>
                             </div>
@@ -316,23 +423,51 @@
                                         <label class="radio-item"><input type="radio" name="scope_intel" value="none"><span>None at this time</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_intel" value="sector"><span>Sector and geography trend briefings for leadership</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_intel" value="brand"><span>Brand and digital footprint monitoring (phishing, impersonation)</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_intel" value="ongoing"><span>Ongoing analyst access and custom intelligence requirements</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_intel" value="ongoing"><span>Ongoing analyst support for investigations and custom requirements</span></label>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Taegis Platform -->
+                        <!-- Sophos & Taegis Platform -->
                         <div class="service-block scoping-question-block">
                             <div class="scoping-questions">
-                                <div class="scoping-title">Taegis Platform</div>
+                                <div class="scoping-title">Sophos &amp; Taegis Platform</div>
                                 <div class="form-group">
-                                    <label class="question">What is your current relationship with the Taegis platform?</label>
+                                    <label class="question">Which best describes your detection and response platform needs?</label>
+                                    <div class="radio-group scoping-radio-group" style="flex-direction: column; gap: 0.6rem;">
+                                        <label class="radio-item"><input type="radio" name="scope_platform" value="none"><span>Not using Sophos MDR/XDR or Taegis / no current need</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_platform" value="sophos_mdr"><span>Deploying or expanding Sophos MDR</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_platform" value="sophos_xdr"><span>Deploying or expanding Sophos Hybrid XDR</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_platform" value="sophos_posture"><span>Using Sophos Central — want a security posture review</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_platform" value="taegis_new"><span>New or deploying Taegis — need onboarding and training</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_platform" value="taegis_optimize"><span>Existing Taegis customer — optimize detections and workflows</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_platform" value="taegis_integrate"><span>Existing Taegis customer — new log sources, parsers, or playbooks</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="question">Who needs Taegis platform training? (select all that apply)</label>
+                                    <div class="radio-group scoping-radio-group" style="flex-direction: column; gap: 0.6rem;">
+                                        <label class="radio-item"><input type="checkbox" name="scope_train_admin"><span>Taegis administrators</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_train_analyst"><span>Security analysts</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_train_search"><span>Advanced search / investigation users</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_train_parser"><span>Custom parser development</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_train_scenario"><span>Scenario-based training (one scenario)</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Emerging Technology (AI) -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">Emerging Technology (AI)</div>
+                                <div class="form-group">
+                                    <label class="question">Does your organization deploy or plan to deploy LLM/chatbot applications?</label>
                                     <div class="radio-group scoping-radio-group">
-                                        <label class="radio-item"><input type="radio" name="scope_taegis" value="none"><span>Not a Taegis customer</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_taegis" value="new"><span>New or deploying Taegis — need onboarding and training</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_taegis" value="existing_optimize"><span>Existing customer — want to optimize detections and workflows</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_taegis" value="existing_integrate"><span>Existing customer — need custom integrations or log source onboarding</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ai_llm" value="production"><span>Yes — in production or active pilot</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ai_llm" value="planning"><span>Planning deployment within the next 12 months</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ai_llm" value="no"><span>No current or planned LLM/chatbot use</span></label>
                                     </div>
                                 </div>
                             </div>

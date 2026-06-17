@@ -400,100 +400,164 @@ function buildRecommendations() {
     const radio = name => form.querySelector(`[name="${name}"]:checked`)?.value;
     const checked = name => !!form.querySelector(`[name="${name}"]`)?.checked;
 
-    // IR Plan
+    const pentestStale = () => {
+        const pentest = radio('scope_last_pentest');
+        return pentest === 'never' || pentest === 'over2y';
+    };
+
+    // --- Incident Response Program ---
     const irPlan = radio('scope_ir_plan');
     if (irPlan === 'none' || irPlan === 'partial') rec.add('s1_irp_dev_interested');
     if (irPlan === 'outdated') rec.add('s1_irp_review_interested');
 
-    // Playbooks
     const playbooks = radio('scope_playbooks');
     if (playbooks === 'none' || playbooks === 'partial') rec.add('s1_playbook_interested');
 
-    // Last pentest
-    const pentest = radio('scope_last_pentest');
-    if (pentest === 'never') {
-        rec.add('s2_ext_pentest_interested');
-        rec.add('s2_int_pentest_interested');
-        rec.add('s2_webapp_interested');
-    } else if (pentest === 'over2y') {
-        rec.add('s2_ext_pentest_interested');
-        rec.add('s2_webapp_interested');
+    const lastExercise = radio('scope_last_exercise');
+    if (lastExercise === 'never' || lastExercise === 'over12m') rec.add('s4_tabletop_interested');
+
+    const incidentCommander = radio('scope_incident_commander');
+    if (incidentCommander === 'none' || incidentCommander === 'untrained') {
+        rec.add('s4_incident_commander_interested');
     }
 
-    // Environment checkboxes
-    if (checked('scope_env_onprem')) {
-        rec.add('s2_int_pentest_interested');
-        rec.add('s2_ad_interested');
-    }
-    if (checked('scope_env_cloud')) rec.add('s2_cloud_pentest_interested');
-    if (checked('scope_env_web')) {
+    // --- Testing & Validation (pass 2: cadence + environment, not blanket selects) ---
+    if (pentestStale()) rec.add('s2_ext_pentest_interested');
+
+    const appTesting = radio('scope_app_testing');
+    if (appTesting === 'custom_app') rec.add('s2_custom_app_interested');
+    else if (appTesting === 'source_code') rec.add('s2_code_analysis_interested');
+    else if (appTesting === 'web_api') {
+        rec.add('s2_webapp_interested');
+        rec.add('s2_api_interested');
+    } else if (appTesting === 'mobile') rec.add('s2_mobile_app_interested');
+
+    // --- Technology Environment (only add env-specific tests when pentest is stale) ---
+    if (checked('scope_env_onprem') && pentestStale()) rec.add('s2_int_pentest_interested');
+    if (checked('scope_env_cloud') && pentestStale()) rec.add('s2_cloud_pentest_interested');
+    if (checked('scope_env_web') && pentestStale()) {
         rec.add('s2_webapp_interested');
         rec.add('s2_api_interested');
     }
-    if (checked('scope_env_mobile')) rec.add('s2_mobile_app_interested');
-    if (checked('scope_env_iot'))    rec.add('s2_device_pentest_interested');
-    if (checked('scope_env_sap'))    rec.add('s2_sap_interested');
+    if (checked('scope_env_mobile') && pentestStale()) rec.add('s2_mobile_app_interested');
+    if (checked('scope_env_iot') && pentestStale()) rec.add('s2_device_pentest_interested');
+    if (checked('scope_env_sap') && pentestStale()) rec.add('s2_sap_interested');
+    if (checked('scope_env_laptop') && pentestStale()) rec.add('s2_laptop_pentest_interested');
+    if (checked('scope_env_wireless') && pentestStale()) rec.add('s2_wireless_interested');
+    if (checked('scope_env_physical') && pentestStale()) rec.add('s2_physical_interested');
 
-    // Identity infrastructure
+    // --- Identity & Access Security ---
     const identity = radio('scope_identity');
-    if (identity === 'ad'   || identity === 'both') rec.add('s2_ad_interested');
-    if (identity === 'entraid' || identity === 'both') rec.add('s2_entra_interested');
+    const identityAssessed = radio('scope_identity_assessed');
+    const identityStale = identityAssessed === 'never' || identityAssessed === 'over12m';
 
-    // Incident history
+    if (identityStale) {
+        if (identity === 'ad' || identity === 'both') rec.add('s2_ad_interested');
+        if (identity === 'entraid' || identity === 'both') rec.add('s2_entra_interested');
+        if (identity === 'ad' || identity === 'both') rec.add('s2_password_interested');
+    }
+
+    const adTraining = radio('scope_ad_training');
+    if ((identity === 'ad' || identity === 'both') && (adTraining === 'no' || adTraining === 'over2y')) {
+        rec.add('s4_ad_training_interested');
+    }
+
+    // --- Detection & Threat Hunting ---
+    const hunting = radio('scope_hunting');
+    if (hunting === 'none' || hunting === 'adhoc') rec.add('s2_threat_hunt_interested');
+
+    const detectionTest = radio('scope_detection_test');
+    const detectionStale = detectionTest === 'not_tested' || detectionTest === 'over12m';
+    const team = radio('scope_team');
+
+    if (detectionStale) {
+        if (team === 'mature') rec.add('s4_adv_sim_interested');
+        else if (team === 'advanced') rec.add('s4_adv_emul_interested');
+        else rec.add('s4_collab_adv_interested');
+    }
+
+    // --- Incident History & Risk ---
+    if (radio('scope_active_incident') === 'yes') rec.add('s6_emergency_ir_interested');
+
     const incidents = radio('scope_incidents');
     if (incidents === 'ransomware') {
-        rec.add('s6_emergency_ir_interested');
         rec.add('s2_threat_hunt_interested');
         rec.add('s4_tabletop_interested');
+        rec.add('s1_playbook_interested');
     } else if (incidents === 'other') {
         rec.add('s2_threat_hunt_interested');
         rec.add('s4_tabletop_interested');
+        rec.add('s1_playbook_interested');
     } else if (incidents === 'concerned') {
-        rec.add('s6_emergency_ir_interested');
         rec.add('s4_tabletop_interested');
+        rec.add('s1_playbook_interested');
+        rec.add('s3_landscape_interested');
     }
 
-    // Team readiness
-    const team = radio('scope_team');
+    const execReporting = radio('scope_exec_reporting');
+    if (execReporting === 'sector') rec.add('s3_landscape_interested');
+    else if (execReporting === 'brand') rec.add('s3_ebs_interested');
+
+    // --- Team Readiness & Exercises (pass 2) ---
     if (team === 'none') {
         rec.add('s4_ir_training_interested');
         rec.add('s4_incident_commander_interested');
         rec.add('s4_tabletop_interested');
     } else if (team === 'some') {
         rec.add('s4_tabletop_interested');
+        rec.add('s4_functional_interested');
     } else if (team === 'advanced') {
-        rec.add('s4_adv_emul_interested');
-        rec.add('s4_collab_adv_interested');
+        if (!detectionStale) rec.add('s4_collab_adv_interested');
     } else if (team === 'mature') {
-        rec.add('s4_adv_sim_interested');
+        if (!detectionStale) rec.add('s4_adv_sim_interested');
     }
 
-    // Security awareness
+    const exerciseType = radio('scope_exercise_type');
+    if (exerciseType === 'none') rec.add('s4_functional_interested');
+    else if (exerciseType === 'tabletop') rec.add('s4_functional_interested');
+
+    // --- Human Risk & Security Awareness (bug fix: comprehensive / phishing_only) ---
     const awareness = radio('scope_awareness');
     if (awareness === 'none' || awareness === 'basic') rec.add('s2_phish_drill_interested');
-    else if (awareness === 'advanced') rec.add('s2_vishing_interested');
+    else if (awareness === 'phishing_only') {
+        rec.add('s2_phish_drill_interested');
+        rec.add('s2_vishing_interested');
+    }
 
-    // Identity infrastructure — AD training for AD users
-    if (identity === 'ad' || identity === 'both') rec.add('s4_ad_training_interested');
-
-    // Threat intelligence
+    // --- Threat Intelligence ---
     const intel = radio('scope_intel');
-    if (intel === 'sector')  rec.add('s3_landscape_interested');
-    else if (intel === 'brand')   rec.add('s3_ebs_interested');
+    if (intel === 'sector') rec.add('s3_landscape_interested');
+    else if (intel === 'brand') rec.add('s3_ebs_interested');
     else if (intel === 'ongoing') rec.add('s3_ti_support_interested');
 
-    // Taegis platform
-    const taegis = radio('scope_taegis');
-    if (taegis === 'new') {
+    // --- Sophos & Taegis Platform ---
+    const platform = radio('scope_platform');
+    const taegisSelected =
+        platform === 'taegis_new' || platform === 'taegis_optimize' || platform === 'taegis_integrate';
+
+    if (platform === 'sophos_mdr') rec.add('s5_mdr_onboarding_interested');
+    else if (platform === 'sophos_xdr') rec.add('s5_xdr_onboarding_interested');
+    else if (platform === 'sophos_posture') rec.add('s5_posture_interested');
+    else if (platform === 'taegis_new') {
         rec.add('s5_taegis_core_interested');
         rec.add('s5_taegis_analyst_training_interested');
-    } else if (taegis === 'existing_optimize') {
+    } else if (platform === 'taegis_optimize') {
         rec.add('s5_taegis_review_interested');
         rec.add('s5_taegis_plus_interested');
-    } else if (taegis === 'existing_integrate') {
+    } else if (platform === 'taegis_integrate') {
         rec.add('s5_taegis_playbook_interested');
         rec.add('s5_taegis_parser_training_interested');
     }
+
+    if (taegisSelected || checked('scope_train_admin')) rec.add('s5_taegis_admin_training_interested');
+    if (taegisSelected || checked('scope_train_analyst')) rec.add('s5_taegis_analyst_training_interested');
+    if (checked('scope_train_search')) rec.add('s5_taegis_search_training_interested');
+    if (taegisSelected || checked('scope_train_parser')) rec.add('s5_taegis_parser_training_interested');
+    if (checked('scope_train_scenario')) rec.add('s5_taegis_scenario_training_interested');
+
+    // --- Emerging Technology (AI) ---
+    const aiLlm = radio('scope_ai_llm');
+    if (aiLlm === 'production' || aiLlm === 'planning') rec.add('s7_ai_llm_interested');
 
     return rec;
 }

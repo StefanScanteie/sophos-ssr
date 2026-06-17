@@ -14,8 +14,30 @@ Desktop.ini
 *.swo
 *~
 .idea/
+.vscode/
 *.sublime-project
 *.sublime-workspace
+
+# Python (smoke_test.py)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Playwright (browser smoke tests)
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
 
 # If you add a JS toolchain later
 node_modules/
