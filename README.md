@@ -6,7 +6,7 @@
 
 A modern, interactive questionnaire for **Sophos Advisory Services** and **Sophos Professional Services**. Helps prospects explore the official catalog, see Service Unit (SU) sizing, answer readiness-focused scoping questions, and export a PDF summary for their Sophos account team or partner.
 
-**Live Demo:** [stefanscanteie.github.io/secureworks-imr](https://stefanscanteie.github.io/sophos-ssr/)
+**Live Demo:** [stefanscanteie.github.io/sophos-ssr](https://stefanscanteie.github.io/sophos-ssr/)
 
 ---
 
