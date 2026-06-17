@@ -29,7 +29,7 @@ A modern, interactive questionnaire for **Sophos Advisory Services** and **Sopho
 
 ```bash
 # Clone and open
-git clone https://github.com/StefanScanteie/secureworks-imr.git
+git clone https://github.com/StefanScanteie/sophos-ssr.git
 open index.html
 ```
 
