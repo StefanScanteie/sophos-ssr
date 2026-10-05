@@ -1,10 +1,10 @@
-# Sophos Advisory Services Questionnaire
+# Sophos Security Services Questionnaire
 
-![Static Badge](https://img.shields.io/badge/Version-3.1-green)
+![Static Badge](https://img.shields.io/badge/Version-3.2-green)
 ![Static Badge](https://img.shields.io/badge/Demo_Available%3A-Yes-%232006F7)
 ![Static Badge](https://img.shields.io/badge/Status-Experimental-orange)
 
-A modern, interactive questionnaire for **Sophos Advisory Services** and **Sophos Professional Services**. Helps prospects explore the official catalog, see Service Unit (SU) sizing, answer readiness-focused scoping questions, and export a PDF summary for their Sophos account team or partner.
+A modern, interactive questionnaire for the **Sophos Security Services Retainer** catalog. Helps prospects explore DFIR & Readiness, Security Testing & Assessment, and Deployment services, see Service Unit (SU) sizing, answer readiness-focused scoping questions, and export a PDF summary for their Sophos account team or partner.
 
 **Live Demo:** [stefanscanteie.github.io/sophos-ssr](https://stefanscanteie.github.io/sophos-ssr/)
 
@@ -14,7 +14,7 @@ A modern, interactive questionnaire for **Sophos Advisory Services** and **Sopho
 
 - **macOS Settings-style Layout** — Two-panel design with sidebar navigation
 - **Guided scoping recommendations** — Eleven readiness question blocks auto-select catalog services; all selections remain editable
-- **7 Service Categories** — 49 catalog services (plus Introduction, Scoping Questions, and Contact in the sidebar)
+- **7 Service Categories** — 89 catalog services (plus Introduction, Scoping Questions, and Contact in the sidebar)
 - **Service Unit display** — Each service shows catalog SU sizing in a dedicated line, populated from `service-blurbs.js`
 - **Service search** — Sidebar field filters services by title, description, SU text, and scoping questions (sections 1–7)
 - **Catalog + curated blurbs** — Each service links to the official Sophos catalog page; summaries and SU maps live in `service-blurbs.js`
@@ -64,7 +64,7 @@ python -m playwright install chromium
 | `index.html` | Main HTML structure, scoping questions, and service blocks |
 | `styles.css` | Sophos-branded styles |
 | `script.js` | Navigation, catalog links, SU injection, `buildRecommendations()`, PDF export |
-| `service-blurbs.js` | Curated descriptions (`IMR_SERVICE_BLURBS`) and SU sizing (`IMR_SERVICE_SU`) per service |
+| `service-blurbs.js` | Curated descriptions (`IMR_SERVICE_BLURBS`), SU sizing (`IMR_SERVICE_SU`), and catalog paths (`IMR_SERVICE_CATALOG`) |
 | `smoke_test.py` | Local static + Playwright smoke checks |
 | `sophos-logo.svg` | Sophos logo asset |
 
@@ -83,7 +83,7 @@ The **Scoping Questions** sidebar section drives guided recommendations via `bui
 | Detection & Threat Hunting | Proactive hunting, detection validation against priority TTPs |
 | Incident History & Risk Concerns | Active incident (Emergency IR), incident history, executive reporting |
 | Team Readiness & Exercises | IR maturity, exercise types (tabletop → functional → technical) |
-| Human Risk & Security Awareness | Phishing and vishing program maturity |
+| Human Risk & Security Awareness | Phishing program maturity (credential-capture drills) |
 | Threat Intelligence Needs | Landscape brief, EBS, ongoing analyst support |
 | Sophos & Taegis Platform | MDR/XDR onboarding, Central posture review, Taegis enablement and training |
 | Emerging Technology (AI) | LLM/chatbot deployment plans |
@@ -91,7 +91,7 @@ The **Scoping Questions** sidebar section drives guided recommendations via `bui
 Recommendation logic highlights:
 
 - **Pentest cadence** — Stale or missing pentests recommend External Pentest; environment-specific tests (internal, cloud, web, wireless, etc.) are added only when relevant checkboxes are selected and pentest is stale.
-- **Identity** — AD/Entra assessments and password analysis recommend when identity has not been assessed within 12 months.
+- **Identity** — AD and Entra ID assessments recommend when identity has not been assessed within 12 months. Annual password cracking is a Level 4 retainer entitlement, not a separately listed catalog SKU.
 - **Emergency IR** — Recommended only when the user indicates an **active** incident, not for historical or “concerned about ransomware” answers alone.
 - **Exercises** — Team maturity and last exercise type drive tabletop, functional, purple team, and red team recommendations without duplicate picks.
 
@@ -104,11 +104,11 @@ To change scoping behaviour, edit the questions in `index.html` (`#scoping`) and
 These match the main questionnaire sections (see `index.html`):
 
 1. **Incident Readiness** — IR plans and playbooks
-2. **Testing & Validation** — Pen tests, assessments, phishing/vishing drills
-3. **Threat Intelligence** — EBS brief, landscape brief, TI support
+2. **Testing & Validation** — Pen tests, assessments, credential-capture phishing drills
+3. **Threat Intelligence** — EBS info brief and TI support
 4. **Workshops & Exercises** — Purple/red team, training, tabletops
-5. **Professional Services** — Taegis onboarding, training, Sophos MDR/XDR onboarding ([Professional Services catalog](https://docs.sophos.com/servicescatalog/en-us/pages/professional-services.html))
-6. **Incident Response** — Emergency IR and custom-scoped engagements
+5. **Deployment Services** — Fusion/Central implementation, guided onboarding, firewall/network, health checks, and training ([Deployment catalog](https://docs.sophos.com/servicescatalog/en-us/pages/deployment.html))
+6. **Incident Response** — Digital Forensics and Incident Response, custom-scoped engagements, and project management
 7. **AI Security** — AI LLM Security Assessment
 
 There are also **Introduction**, **Scoping Questions**, and **Contact Information** entries in the nav (not counted in the seven service categories above).
@@ -119,10 +119,12 @@ There are also **Introduction**, **Scoping Questions**, and **Contact Informatio
 
 | Content | URL |
 |---------|-----|
-| Advisory services | [Sophos Advisory Services](https://docs.sophos.com/servicescatalog/en-us/pages/advisory-services.html) |
-| Professional services | [Sophos Professional Services](https://docs.sophos.com/servicescatalog/en-us/pages/professional-services.html) |
+| Catalog home / retainer tiers | [Sophos Security Services Retainer](https://docs.sophos.com/servicescatalog/en-us/index.html) |
+| DFIR & Readiness | [DFIR & Readiness Services](https://docs.sophos.com/servicescatalog/en-us/pages/dfir.html) |
+| Security testing & assessment | [Security Testing & Assessment](https://docs.sophos.com/servicescatalog/en-us/pages/security-testing_assessment-services.html) |
+| Deployment | [Sophos Deployment Services](https://docs.sophos.com/servicescatalog/en-us/pages/deployment.html) |
 
-To update service names, descriptions, or SU values, edit `service-blurbs.js` (keys must match `.service-title` text in `index.html` exactly) and adjust `serviceDocSlugs` / pro-service paths in `script.js` when catalog URLs change.
+To update service names, descriptions, SU values, or catalog links, edit `service-blurbs.js` (keys must match `.service-title` text in `index.html` exactly). `IMR_SERVICE_CATALOG` holds the official page path or absolute URL.
 
 ---
 
@@ -139,7 +141,16 @@ Official Sophos colors from [brand.sophos.com](https://brand.sophos.com/identity
 
 ## Changelog
 
-### v3.1 (Current)
+### v3.2 (Current)
+
+- Synced to the September 2026 Security Services Retainer catalog (DFIR & Readiness, Security Testing & Assessment, Deployment)
+- Replaced retired Advisory / Professional Services overview links with the current catalog hubs
+- Added retainer tier table (Levels 1–4) and expanded Deployment to the current implementation, onboarding, firewall, and training SKUs
+- Renamed services to match the catalog (DFIR, Fusion posture assessment, Entra ID, Threat Hunting/Compromise Assessment, credential-capture phishing)
+- Folded retired standalone SKUs (vishing, password cracking, device/laptop/medical/SAP tests, threat landscape brief) into custom-scoped or retainer entitlements
+- Cloud Penetration Test SU now includes Custom: 26; added Project Management Services
+
+### v3.1
 
 - Expanded **Scoping Questions** to eleven readiness blocks aligned with cybersecurity best practices and the current catalog
 - Smarter recommendation logic: pentest and environment gating, identity assessment cadence, active-incident-only Emergency IR, exercise maturity ladder
@@ -186,8 +197,10 @@ Official Sophos colors from [brand.sophos.com](https://brand.sophos.com/identity
 
 ## Resources
 
-- [Sophos Advisory Services Catalog](https://docs.sophos.com/servicescatalog/en-us/pages/advisory-services.html)
-- [Sophos Professional Services Catalog](https://docs.sophos.com/servicescatalog/en-us/pages/professional-services.html)
+- [Sophos Security Services Retainer Catalog](https://docs.sophos.com/servicescatalog/en-us/index.html)
+- [DFIR & Readiness Services](https://docs.sophos.com/servicescatalog/en-us/pages/dfir.html)
+- [Security Testing & Assessment](https://docs.sophos.com/servicescatalog/en-us/pages/security-testing_assessment-services.html)
+- [Sophos Deployment Services](https://docs.sophos.com/servicescatalog/en-us/pages/deployment.html)
 - [Sophos Brand Guidelines](https://brand.sophos.com)
 
 ---

@@ -69,6 +69,10 @@ def run_static_checks() -> list[str]:
 
     if "docs.taegis.secureworks.com" in html or "docs.taegis.secureworks.com" in script_js:
         errors.append("Legacy Taegis catalog URL still present")
+    if "pages/professional-services.html" in html or "pages/professional-services.html" in script_js:
+        errors.append("Retired Professional Services catalog URL still present")
+    if "pages/advisory-services.html" in html or "pages/advisory-services.html" in script_js:
+        errors.append("Retired Advisory Services overview URL still present")
 
     if desc_count != len(titles):
         errors.append(f"service-description count ({desc_count}) != titles ({len(titles)})")
@@ -77,6 +81,7 @@ def run_static_checks() -> list[str]:
 
     blurbs = parse_js_object(blurbs_js, "IMR_SERVICE_BLURBS")
     sus = parse_js_object(blurbs_js, "IMR_SERVICE_SU")
+    catalog_paths = parse_js_object(blurbs_js, "IMR_SERVICE_CATALOG")
 
     for title in titles:
         if title not in blurbs:
@@ -84,16 +89,37 @@ def run_static_checks() -> list[str]:
         if title not in sus:
             errors.append(f"Missing SU map for: {title}")
 
-    if "Phishing Drill – Click and Log" in titles or "Phishing Drill – Credential Capture" in titles:
-        errors.append("Phishing drills were not merged")
-    if "Phishing Drills" not in titles:
-        errors.append("Merged Phishing Drills service missing")
+    overview_only = {
+        "Custom-scoped Engagement",
+        "Custom Project",
+        "Sophos Managed Risk implementation (per device)",
+        "Sophos Secure Workspace implementation",
+    }
+    for title in titles:
+        if title in overview_only:
+            continue
+        if title not in catalog_paths:
+            errors.append(f"Missing catalog path for: {title}")
+
+    if "Phishing Drill – Click and Log" in titles:
+        errors.append("Retired Click and Log phishing SKU still present")
+    if "Phishing Drill - Credential Capture" not in titles:
+        errors.append("Credential-capture phishing drill missing")
 
     removed = [
         "Vulnerability Assessment",
         "Ransomware Preparedness Program",
         "Technical Assistance Services",
         "Taegis Health Check",
+        "Vishing Drill",
+        "Password Cracking and Analysis Assessment",
+        "Device Penetration Test",
+        "Laptop Penetration Test",
+        "Medical Device Test",
+        "SAP Penetration Test",
+        "Threat Landscape Brief",
+        "Emergency Incident Response",
+        "Sophos Central Security posture assessment",
     ]
     for name in removed:
         if name in titles:
@@ -101,16 +127,31 @@ def run_static_checks() -> list[str]:
 
     required_new = [
         "AI LLM Security Assessment",
-        "Emergency Incident Response",
+        "Digital Forensics and Incident Response",
         "Taegis Solution Review – per tenant",
         "Purple Team Exercise",
+        "Project Management Services",
+        "Sophos Fusion Security posture assessment",
+        "Entra ID Security Assessment",
+        "Threat Hunting/Compromise Assessment",
+        "Enterprise Brand Surveillance Info Brief",
+        "Support implementation services",
+        "Sophos MDR guided onboarding for enterprise",
+        "Cloud Penetration Test",
     ]
     for name in required_new:
         if name not in titles:
             errors.append(f"Expected service missing: {name}")
 
+    if len(titles) < 89:
+        errors.append(f"Expected at least 89 catalog services, found {len(titles)}")
+
     if "docs.sophos.com/servicescatalog" not in script_js:
         errors.append("Sophos catalog base URL missing from script.js")
+    if "pages/dfir.html" not in html:
+        errors.append("DFIR catalog hub link missing from HTML")
+    if "pages/deployment.html" not in html:
+        errors.append("Deployment catalog hub link missing from HTML")
 
     return errors
 
@@ -131,11 +172,11 @@ def run_browser_checks() -> list[str]:
 
         page.goto(BASE, wait_until="networkidle", timeout=30000)
         page.wait_for_function(
-            "() => document.querySelectorAll('.service-su').length >= 49",
+            "() => document.querySelectorAll('.service-su').length >= 89",
             timeout=10000,
         )
 
-        if page.title() != "Sophos Advisory Services Questionnaire":
+        if page.title() != "Sophos Security Services Questionnaire":
             errors.append(f"Unexpected page title: {page.title()!r}")
 
         su_sample = page.locator(".service-block .service-su").first.inner_text(timeout=5000)
@@ -182,10 +223,10 @@ def run_browser_checks() -> list[str]:
             timeout=5000,
         )
 
-        # Phishing-only awareness -> vishing drill
+        # Phishing-only awareness -> credential-capture phishing drill
         page.locator('input[name="scope_awareness"][value="phishing_only"]').check()
         page.wait_for_function(
-            "() => document.querySelector('input[name=\"s2_vishing_interested\"]')?.checked === true",
+            "() => document.querySelector('input[name=\"s2_phish_drill_interested\"]')?.checked === true",
             timeout=5000,
         )
 
@@ -214,11 +255,11 @@ def run_browser_checks() -> list[str]:
         )
 
         # Search filters to phishing drills
-        page.fill("#sidebar-service-search", "phishing drills")
+        page.fill("#sidebar-service-search", "phishing drill")
         page.wait_for_function(
             """() => {
                 const block = [...document.querySelectorAll('.service-title')]
-                  .find(el => el.textContent.trim() === 'Phishing Drills')
+                  .find(el => el.textContent.trim() === 'Phishing Drill - Credential Capture')
                   ?.closest('.service-block');
                 return block && !block.classList.contains('search-hidden');
             }""",

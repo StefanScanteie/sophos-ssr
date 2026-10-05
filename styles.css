@@ -1,5 +1,5 @@
 /* ===========================================
-   Sophos IMR Advisory Services Questionnaire
+   Sophos Security Services Questionnaire
    Styles - macOS Settings-style Layout
    =========================================== */
 
@@ -814,6 +814,54 @@ textarea {
     font-size: 0.95rem;
     line-height: 1.55;
     margin: 0 0 1.25rem;
+}
+
+.retainer-table-wrap {
+    margin-top: 1.25rem;
+    text-align: left;
+}
+
+.retainer-table-title {
+    margin: 0 0 0.6rem;
+    font-size: 0.95rem;
+    color: var(--sophos-blue-dark);
+}
+
+.retainer-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.retainer-table th,
+.retainer-table td {
+    border: 1px solid var(--sophos-border);
+    padding: 0.45rem 0.55rem;
+    vertical-align: top;
+}
+
+.retainer-table thead th {
+    background: var(--sophos-bg);
+    color: var(--sophos-blue-dark);
+    text-align: center;
+}
+
+.retainer-table tbody th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--sophos-blue-dark);
+    background: #f8f7ff;
+}
+
+.retainer-table td {
+    text-align: center;
+}
+
+.retainer-table-note {
+    margin: 0.65rem 0 0;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--sophos-gray-light);
 }
 
 /* ===================== SCOPING QUESTION BLOCKS ===================== */
