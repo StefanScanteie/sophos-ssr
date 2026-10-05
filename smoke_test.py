@@ -153,6 +153,23 @@ def run_static_checks() -> list[str]:
     if "pages/deployment.html" not in html:
         errors.append("Deployment catalog hub link missing from HTML")
 
+    for name in (
+        "scope_env_m365",
+        "scope_env_email",
+        "scope_env_firewall",
+        "scope_env_specialized",
+        "scope_plat_mdr",
+        "scope_itdr",
+        "scope_attack_surface",
+        "scope_retainer_tier",
+    ):
+        if f'name="{name}"' not in html:
+            errors.append(f"Expected scoping field missing: {name}")
+    if 'name="scope_env_iot"' in html or 'name="scope_platform"' in html:
+        errors.append("Retired scoping fields (scope_env_iot / scope_platform) still present")
+    if "AI &amp; copilots" not in html and "AI & copilots" not in html:
+        errors.append("AI block was not renamed to AI & copilots")
+
     pos = 0
     nested = False
     while True:
@@ -278,6 +295,64 @@ def run_browser_checks() -> list[str]:
         page.locator('input[name="scope_env_onprem"]').check()
         page.wait_for_function(
             "() => document.querySelector('input[name=\"s2_int_pentest_interested\"]')?.checked === true",
+            timeout=5000,
+        )
+
+        # 1–2 year pentest is now stale (insurance/annual cadence)
+        page.locator('input[name="scope_env_onprem"]').uncheck()
+        page.locator('input[name="scope_last_pentest"][value="within2y"]').check()
+        page.wait_for_function(
+            "() => document.querySelector('input[name=\"s2_ext_pentest_interested\"]')?.checked === true",
+            timeout=5000,
+        )
+
+        # Specialized estate -> custom-scoped
+        page.locator('input[name="scope_env_specialized"]').check()
+        page.wait_for_function(
+            "() => document.querySelector('input[name=\"s6_custom_engagement_interested\"]')?.checked === true",
+            timeout=5000,
+        )
+        page.locator('input[name="scope_env_specialized"]').uncheck()
+
+        # BEC history -> phishing drill + brand surveillance
+        page.locator('input[name="scope_incidents"][value="bec"]').check()
+        page.wait_for_function(
+            """() => {
+                const phish = document.querySelector('input[name="s2_phish_drill_interested"]')?.checked;
+                const ebs = document.querySelector('input[name="s3_ebs_interested"]')?.checked;
+                return phish === true && ebs === true;
+            }""",
+            timeout=5000,
+        )
+
+        # Attack surface gap -> Managed Risk
+        page.locator('input[name="scope_attack_surface"][value="want"]').check()
+        page.wait_for_function(
+            "() => document.querySelector('input[name=\"s5_mr_easm_interested\"]')?.checked === true",
+            timeout=5000,
+        )
+
+        # ITDR interest
+        page.locator('input[name="scope_itdr"][value="interested"]').check()
+        page.wait_for_function(
+            "() => document.querySelector('input[name=\"s5_itdr_interested\"]')?.checked === true",
+            timeout=5000,
+        )
+
+        # Platform checkboxes: MDR deploy
+        page.locator('input[name="scope_plat_mdr"]').check()
+        page.locator('input[name="scope_need_onboard"]').check()
+        page.wait_for_function(
+            "() => document.querySelector('input[name=\"s5_mdr_onboarding_interested\"]')?.checked === true",
+            timeout=5000,
+        )
+
+        # Level 1 retainer should not recommend full-spectrum red team
+        page.locator('input[name="scope_retainer_tier"][value="level1"]').check()
+        page.locator('input[name="scope_team"][value="mature"]').check()
+        page.locator('input[name="scope_detection_test"][value="not_tested"]').check()
+        page.wait_for_function(
+            "() => document.querySelector('input[name=\"s4_adv_sim_interested\"]')?.checked !== true",
             timeout=5000,
         )
 

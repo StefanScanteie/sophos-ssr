@@ -218,7 +218,7 @@
                     <div class="content-body">
                         <div class="intro-card">
                             <h2>Guided Recommendations</h2>
-                            <p>These questions follow common readiness themes: documented response, tested controls, identity security, detection validation, and exercised teams. Recommendations map to the current Sophos Security Services Retainer catalog — adjust any selection before export.</p>
+                            <p>These questions follow what customers usually need help with now: identity and email risk, tested controls, Fusion/MDR estates, attack surface, and exercised teams. Recommendations map to the current Sophos Security Services Retainer catalog — adjust any selection before export.</p>
                         </div>
 
                         <!-- IR Program Maturity -->
@@ -235,7 +235,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="question">Do you have documented playbooks for specific incident scenarios (e.g., ransomware, phishing, data breach)?</label>
+                                    <label class="question">Do you have documented playbooks for specific incident scenarios (e.g., ransomware, BEC / invoice fraud, identity takeover, data extortion)?</label>
                                     <div class="radio-group scoping-radio-group">
                                         <label class="radio-item"><input type="radio" name="scope_playbooks" value="none"><span>No playbooks</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_playbooks" value="partial"><span>Some playbooks, but gaps exist</span></label>
@@ -270,7 +270,7 @@
                                     <div class="radio-group scoping-radio-group">
                                         <label class="radio-item"><input type="radio" name="scope_last_pentest" value="never"><span>Never</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_last_pentest" value="over2y"><span>More than 2 years ago</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_last_pentest" value="within2y"><span>Within the last 1–2 years</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_last_pentest" value="within2y"><span>1–2 years ago (older than typical insurance / annual cadence)</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_last_pentest" value="within1y"><span>Within the last 12 months</span></label>
                                     </div>
                                 </div>
@@ -278,10 +278,11 @@
                                     <label class="question">Which application security gap best describes your organization?</label>
                                     <div class="radio-group scoping-radio-group">
                                         <label class="radio-item"><input type="radio" name="scope_app_testing" value="none"><span>No significant gap / not applicable</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_app_testing" value="web_api"><span>Public or partner-facing web applications or APIs</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_app_testing" value="saas_api"><span>SaaS / API integrations (M365, partner APIs, webhooks)</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_app_testing" value="mobile"><span>Mobile applications (iOS or Android)</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_app_testing" value="custom_app"><span>Custom or thick-client applications with limited pre-production testing</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_app_testing" value="source_code"><span>In-house development with source code available for review</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_app_testing" value="web_api"><span>Public or partner-facing web applications or APIs</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_app_testing" value="mobile"><span>Mobile applications (iOS or Android)</span></label>
                                     </div>
                                 </div>
                             </div>
@@ -294,15 +295,16 @@
                                 <div class="form-group">
                                     <label class="question">Which of the following describe your environment? (select all that apply)</label>
                                     <div class="radio-group scoping-radio-group" style="flex-direction: column; gap: 0.6rem;">
-                                        <label class="radio-item"><input type="checkbox" name="scope_env_onprem"><span>On-premises infrastructure (servers, data center)</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_m365"><span>Microsoft 365 / other SaaS (email, identity, collaboration)</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_email"><span>Email security is a priority (BEC, impersonation, DMARC)</span></label>
                                         <label class="radio-item"><input type="checkbox" name="scope_env_cloud"><span>Cloud workloads (AWS, Azure, GCP)</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_onprem"><span>On-premises infrastructure (servers, data center)</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_firewall"><span>Sophos Firewall / network estate (including XG to XGS)</span></label>
                                         <label class="radio-item"><input type="checkbox" name="scope_env_web"><span>Web applications or APIs</span></label>
                                         <label class="radio-item"><input type="checkbox" name="scope_env_mobile"><span>Mobile applications (iOS or Android)</span></label>
-                                        <label class="radio-item"><input type="checkbox" name="scope_env_iot"><span>Specialized / IoT / OT devices (custom-scoped testing)</span></label>
-                                        <label class="radio-item"><input type="checkbox" name="scope_env_sap"><span>SAP systems (custom-scoped testing)</span></label>
-                                        <label class="radio-item"><input type="checkbox" name="scope_env_laptop"><span>Corporate laptops, medical devices, or other specialized targets (custom-scoped)</span></label>
                                         <label class="radio-item"><input type="checkbox" name="scope_env_wireless"><span>Corporate Wi-Fi at physical sites</span></label>
                                         <label class="radio-item"><input type="checkbox" name="scope_env_physical"><span>Physical offices with controlled access (multiple sites)</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_env_specialized"><span>Specialized targets (OT / IoT, SAP, medical, laptop builds) — custom-scoped</span></label>
                                     </div>
                                 </div>
                             </div>
@@ -335,6 +337,14 @@
                                         <label class="radio-item"><input type="radio" name="scope_ad_training" value="no"><span>No</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_ad_training" value="over2y"><span>Yes — more than 2 years ago</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_ad_training" value="recent"><span>Yes — within the last 2 years</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="question">Do you want identity threat detection and response (ITDR) deployed or expanded?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_itdr" value="interested"><span>Yes — deploy or expand ITDR</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_itdr" value="deployed"><span>Already deployed / no help needed</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_itdr" value="no"><span>Not at this time</span></label>
                                     </div>
                                 </div>
                             </div>
@@ -377,10 +387,12 @@
                                 <div class="form-group">
                                     <label class="question">Has your organization experienced a significant security incident in the last 3 years?</label>
                                     <div class="radio-group scoping-radio-group">
-                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="ransomware"><span>Yes — ransomware or extortion</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="other"><span>Yes — other significant incident (breach, fraud, insider)</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="concerned"><span>No incident, but ransomware is a top concern</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="none"><span>No known incidents, no specific ransomware concern</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="ransomware"><span>Yes — ransomware or data extortion</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="bec"><span>Yes — BEC, invoice fraud, or email impersonation</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="identity"><span>Yes — identity / Microsoft 365 account takeover</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="other"><span>Yes — other significant incident (breach, insider, vendor)</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="concerned"><span>No incident, but ransomware or BEC is a top concern</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_incidents" value="none"><span>No known incidents, no specific concern</span></label>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -389,6 +401,7 @@
                                         <label class="radio-item"><input type="radio" name="scope_exec_reporting" value="no"><span>No / not a current priority</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_exec_reporting" value="sector"><span>Yes — sector and threat trend briefings</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_exec_reporting" value="brand"><span>Yes — brand exposure and impersonation risk</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_exec_reporting" value="board"><span>Yes — board-level cyber-risk narrative / annual briefing</span></label>
                                     </div>
                                 </div>
                             </div>
@@ -429,7 +442,24 @@
                                         <label class="radio-item"><input type="radio" name="scope_awareness" value="none"><span>No — we have not run phishing or social engineering tests</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_awareness" value="basic"><span>Basic simulations only (click tracking or credential capture)</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_awareness" value="phishing_only"><span>Regular phishing program — want a credential-capture drill</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_awareness" value="bec_voice"><span>Invoice fraud, callback BEC, or deepfake / voice attacks are a concern</span></label>
                                         <label class="radio-item"><input type="radio" name="scope_awareness" value="comprehensive"><span>Comprehensive awareness program already in place</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Attack Surface -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">External Attack Surface</div>
+                                <div class="form-group">
+                                    <label class="question">Do you have a current inventory of internet-facing assets and want help with exposure or vulnerability management?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_attack_surface" value="current"><span>Yes — current inventory and a program in place</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_attack_surface" value="unknown"><span>Unknown / incomplete inventory of what is on the internet</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_attack_surface" value="want"><span>Want continuous exposure and vulnerability management (Managed Risk)</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_attack_surface" value="none"><span>Not a priority now</span></label>
                                     </div>
                                 </div>
                             </div>
@@ -451,20 +481,29 @@
                             </div>
                         </div>
 
-                        <!-- Sophos & Taegis Platform -->
+                        <!-- Sophos estate -->
                         <div class="service-block scoping-question-block">
                             <div class="scoping-questions">
-                                <div class="scoping-title">Sophos &amp; Taegis Platform</div>
+                                <div class="scoping-title">Sophos Estate &amp; Platform</div>
                                 <div class="form-group">
-                                    <label class="question">Which best describes your detection and response platform needs?</label>
+                                    <label class="question">Which Sophos products or platforms are in scope? (select all that apply)</label>
                                     <div class="radio-group scoping-radio-group" style="flex-direction: column; gap: 0.6rem;">
-                                        <label class="radio-item"><input type="radio" name="scope_platform" value="none"><span>Not using Sophos MDR/XDR or Taegis / no current need</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_platform" value="sophos_mdr"><span>Deploying or expanding Sophos MDR</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_platform" value="sophos_xdr"><span>Deploying or expanding Sophos Hybrid XDR</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_platform" value="sophos_posture"><span>Using Sophos Fusion / Central — want a security posture review</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_platform" value="taegis_new"><span>New or deploying Taegis — need onboarding and training</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_platform" value="taegis_optimize"><span>Existing Taegis customer — optimize detections and workflows</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_platform" value="taegis_integrate"><span>Existing Taegis customer — new log sources, parsers, or playbooks</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_plat_mdr"><span>Sophos MDR</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_plat_xdr"><span>Sophos Hybrid XDR</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_plat_fusion"><span>Sophos Fusion / Central (endpoint, email, or other)</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_plat_email"><span>Sophos Email / DMARC / Phish Threat</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_plat_firewall"><span>Sophos Firewall</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_plat_taegis"><span>Taegis</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="question">What help do you need with that estate? (select all that apply)</label>
+                                    <div class="radio-group scoping-radio-group" style="flex-direction: column; gap: 0.6rem;">
+                                        <label class="radio-item"><input type="checkbox" name="scope_need_onboard"><span>Guided onboarding or a new implementation</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_need_migrate"><span>Estate migration (for example Central to Fusion)</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_need_posture"><span>Security posture or solution review</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_need_integrate"><span>New integrations, parsers, or response playbooks</span></label>
+                                        <label class="radio-item"><input type="checkbox" name="scope_need_train"><span>Operator / analyst training</span></label>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -480,16 +519,34 @@
                             </div>
                         </div>
 
-                        <!-- Emerging Technology (AI) -->
+                        <!-- Retainer size -->
                         <div class="service-block scoping-question-block">
                             <div class="scoping-questions">
-                                <div class="scoping-title">Emerging Technology (AI)</div>
+                                <div class="scoping-title">Retainer Size</div>
                                 <div class="form-group">
-                                    <label class="question">Does your organization deploy or plan to deploy LLM/chatbot applications?</label>
+                                    <label class="question">Which Security Services Retainer tier are you scoping against?</label>
                                     <div class="radio-group scoping-radio-group">
-                                        <label class="radio-item"><input type="radio" name="scope_ai_llm" value="production"><span>Yes — in production or active pilot</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_ai_llm" value="planning"><span>Planning deployment within the next 12 months</span></label>
-                                        <label class="radio-item"><input type="radio" name="scope_ai_llm" value="no"><span>No current or planned LLM/chatbot use</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_retainer_tier" value="unknown"><span>Unknown / not sure yet</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_retainer_tier" value="level1"><span>Level 1 (2 SU / year)</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_retainer_tier" value="level2"><span>Level 2 (15 SU / year)</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_retainer_tier" value="level3"><span>Level 3 (35 SU / year)</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_retainer_tier" value="level4"><span>Level 4 (65 SU / year)</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI & copilots -->
+                        <div class="service-block scoping-question-block">
+                            <div class="scoping-questions">
+                                <div class="scoping-title">AI &amp; copilots</div>
+                                <div class="form-group">
+                                    <label class="question">How is your organization using AI assistants or custom LLMs?</label>
+                                    <div class="radio-group scoping-radio-group">
+                                        <label class="radio-item"><input type="radio" name="scope_ai_llm" value="production"><span>Custom LLM / chatbot in production or active pilot</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ai_llm" value="copilot"><span>M365 Copilot, Google, or other shadow / SaaS AI — no custom app yet</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ai_llm" value="planning"><span>Planning a custom LLM or chatbot within 12 months</span></label>
+                                        <label class="radio-item"><input type="radio" name="scope_ai_llm" value="no"><span>No current or planned AI assistant use</span></label>
                                     </div>
                                 </div>
                             </div>

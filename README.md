@@ -1,6 +1,6 @@
 # Sophos Security Services Questionnaire
 
-![Static Badge](https://img.shields.io/badge/Version-3.2-green)
+![Static Badge](https://img.shields.io/badge/Version-3.3-green)
 ![Static Badge](https://img.shields.io/badge/Demo_Available%3A-Yes-%232006F7)
 ![Static Badge](https://img.shields.io/badge/Status-Experimental-orange)
 
@@ -13,7 +13,7 @@ A modern, interactive questionnaire for the **Sophos Security Services Retainer*
 ## Features
 
 - **macOS Settings-style Layout** — Two-panel design with sidebar navigation
-- **Guided scoping recommendations** — Eleven readiness question blocks auto-select catalog services; all selections remain editable
+- **Guided scoping recommendations** — Thirteen readiness question blocks auto-select catalog services; all selections remain editable
 - **7 Service Categories** — 89 catalog services (plus Introduction, Scoping Questions, and Contact in the sidebar)
 - **Service Unit display** — Each service shows catalog SU sizing in a dedicated line, populated from `service-blurbs.js`
 - **Service search** — Sidebar field filters services by title, description, SU text, and scoping questions (sections 1–7)
@@ -72,27 +72,34 @@ python -m playwright install chromium
 
 ## Scoping Questions
 
-The **Scoping Questions** sidebar section drives guided recommendations via `buildRecommendations()` in `script.js`. Answers map to catalog services using common readiness themes (documented response, tested controls, identity security, detection validation, exercised teams).
+The **Scoping Questions** sidebar section drives guided recommendations via `buildRecommendations()` in `script.js`. Answers map to catalog services using common readiness themes (identity and email risk, tested controls, Fusion/MDR estates, attack surface, exercised teams).
 
 | Block | Topics covered |
 |-------|----------------|
-| Incident Response Program | IR plan, playbooks, last exercise, incident commander |
-| Testing & Validation History | Pentest cadence, application security gaps |
-| Technology Environment | On-prem, cloud, web/API, mobile, IoT, SAP, laptops, Wi‑Fi, physical sites |
-| Identity & Access Security | AD / Entra ID, identity assessment cadence, AD attack-path training |
-| Detection & Threat Hunting | Proactive hunting, detection validation against priority TTPs |
-| Incident History & Risk Concerns | Active incident (Emergency IR), incident history, executive reporting |
+| Incident Response Program | IR plan, playbooks (ransomware, BEC, identity, extortion), last exercise, incident commander |
+| Testing & Validation History | Pentest cadence (12-month / insurance window), application and SaaS/API gaps |
+| Technology Environment | M365/SaaS, email/BEC, cloud, on-prem, Sophos Firewall, web/API, mobile, Wi‑Fi, physical sites, specialized (OT/IoT, SAP, medical) |
+| Identity & Access Security | AD / Entra ID, identity assessment cadence, AD attack-path training, ITDR interest |
+| Detection & Threat Hunting | Proactive hunting, detection validation against identity abuse and ransomware TTPs |
+| Incident History & Risk Concerns | Active incident (Emergency IR), ransomware / BEC / identity history, board reporting |
 | Team Readiness & Exercises | IR maturity, exercise types (tabletop → functional → technical) |
-| Human Risk & Security Awareness | Phishing program maturity (credential-capture drills) |
-| Threat Intelligence Needs | Landscape brief, EBS, ongoing analyst support |
-| Sophos & Taegis Platform | MDR/XDR onboarding, Central posture review, Taegis enablement and training |
-| Emerging Technology (AI) | LLM/chatbot deployment plans |
+| Human Risk & Security Awareness | Phishing program maturity, BEC / callback / deepfake concern |
+| External Attack Surface | Internet-facing inventory and Managed Risk (EASM/IASM) |
+| Threat Intelligence Needs | Sector brief, EBS, ongoing analyst support |
+| Sophos Estate & Platform | Product checkboxes (MDR, XDR, Fusion, Email, Firewall, Taegis) plus onboarding, migration, posture, integration, and training needs |
+| Retainer Size | Levels 1–4 (2 / 15 / 35 / 65 SU) — gates full-spectrum red team |
+| AI & copilots | Custom LLM/chatbot, M365 Copilot / SaaS AI, or planned use |
 
 Recommendation logic highlights:
 
-- **Pentest cadence** — Stale or missing pentests recommend External Pentest; environment-specific tests (internal, cloud, web, wireless, etc.) are added only when relevant checkboxes are selected and pentest is stale.
-- **Identity** — AD and Entra ID assessments recommend when identity has not been assessed within 12 months. Annual password cracking is a Level 4 retainer entitlement, not a separately listed catalog SKU.
+- **Pentest cadence** — Missing or aging pentests (never, over 2 years, or 1–2 years) recommend External Pentest; environment-specific tests (internal, cloud, web, wireless, specialized/custom) are added only when those checkboxes are selected and pentest is stale.
+- **Identity & ITDR** — AD and Entra ID assessments recommend when identity has not been assessed within 12 months. Explicit ITDR interest maps to Sophos ITDR implementation. Annual password cracking is a Level 4 retainer entitlement, not a separately listed catalog SKU.
+- **Email & BEC** — Email-priority environments, BEC incident history, and BEC/voice awareness map to credential-capture phishing drills, Phish Threat, Email implementation, DMARC, and brand surveillance.
+- **Attack surface** — Incomplete inventory or a request for continuous exposure management maps to Managed Risk EASM/IASM.
+- **Platform estate** — Product + need checkboxes drive MDR/XDR onboarding, Fusion posture or migration, Email/DMARC, Firewall review or XG-to-XGS, and Taegis implementation, review, playbooks, or training.
+- **Retainer size** — Full-spectrum red team (Advanced Adversary Simulation) is recommended only for unknown, Level 3, or Level 4 retainers.
 - **Emergency IR** — Recommended only when the user indicates an **active** incident, not for historical or “concerned about ransomware” answers alone.
+- **Coordination** — Four or more recommended services also suggest Project Management Services.
 - **Exercises** — Team maturity and last exercise type drive tabletop, functional, purple team, and red team recommendations without duplicate picks.
 
 To change scoping behaviour, edit the questions in `index.html` (`#scoping`) and the matching rules in `buildRecommendations()`.
@@ -141,7 +148,16 @@ Official Sophos colors from [brand.sophos.com](https://brand.sophos.com/identity
 
 ## Changelog
 
-### v3.2 (Current)
+### v3.3 (Current)
+
+- Light-refresh of **Scoping Questions** for the current customer landscape: identity/ITDR, BEC and email, Managed Risk attack surface, Fusion/MDR estates, and retainer tiers
+- Tightened pentest stale window to include 1–2 year (insurance / annual) cadence
+- Replaced environment IoT/SAP/laptop checkboxes with M365, email, firewall, and specialized (custom-scoped) options
+- Split incident history into ransomware, BEC, and identity takeover; added board-level reporting
+- Replaced the single platform radio with product + need checkboxes; added External Attack Surface, Retainer Size, and AI & copilots
+- Recommendation engine maps the new answers (ITDR, EASM, MDR onboard, BEC path, red-team gated by L3/L4) and suggests Project Management when four or more services are recommended
+
+### v3.2
 
 - Synced to the September 2026 Security Services Retainer catalog (DFIR & Readiness, Security Testing & Assessment, Deployment)
 - Replaced retired Advisory / Professional Services overview links with the current catalog hubs
