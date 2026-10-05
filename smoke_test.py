@@ -153,6 +153,33 @@ def run_static_checks() -> list[str]:
     if "pages/deployment.html" not in html:
         errors.append("Deployment catalog hub link missing from HTML")
 
+    pos = 0
+    nested = False
+    while True:
+        start = html.find('<div class="service-block">', pos)
+        if start == -1:
+            break
+        cursor = start + len('<div class="service-block">')
+        depth = 1
+        while depth and cursor < len(html):
+            nxt_open = html.find("<div", cursor)
+            nxt_close = html.find("</div>", cursor)
+            if nxt_close == -1:
+                break
+            if nxt_open != -1 and nxt_open < nxt_close:
+                if html.startswith('<div class="service-block">', nxt_open):
+                    nested = True
+                    break
+                depth += 1
+                cursor = nxt_open + 4
+            else:
+                depth -= 1
+                cursor = nxt_close + 6
+        if nested:
+            errors.append("Nested service-block detected; catalog cards must be siblings")
+            break
+        pos = cursor
+
     return errors
 
 
@@ -255,6 +282,19 @@ def run_browser_checks() -> list[str]:
         )
 
         # Search filters to phishing drills
+        page.fill("#sidebar-service-search", "managed risk easm")
+        page.wait_for_function(
+            """() => {
+                const block = [...document.querySelectorAll('.service-title')]
+                  .find(el => el.textContent.includes('Managed Risk EASM'))
+                  ?.closest('.service-block');
+                if (!block || block.classList.contains('search-hidden')) return false;
+                const box = block.getBoundingClientRect();
+                return box.height > 80 && box.width > 200;
+            }""",
+            timeout=5000,
+        )
+
         page.fill("#sidebar-service-search", "phishing drill")
         page.wait_for_function(
             """() => {
